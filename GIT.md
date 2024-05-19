@@ -37,7 +37,8 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
   * The git stash pop command is used to apply the most recently stashed changes and remove them from the stash.
   * When you run git stash pop, Git will take the most recent set of stashed changes (the one on top of the stash stack), apply those changes to your working directory and staging area, and then remove that stash from the stash stack.
 <br></br>
-
+  ## git stash clear
+  * command is used ***to remove all stashed*** changes from the stash stack. It's a way to clean up your repository's stash area by permanently deleting all the stashed changes.
 <br></br>
 
 <br></br>
