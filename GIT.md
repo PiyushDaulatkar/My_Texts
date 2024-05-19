@@ -30,10 +30,12 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
 ## git stash
 * If you ***don't want to commit*** and also ***don't want to lose those changes***.
 * eg. take a photo of wedding guests and make them go backstage.
-  ## guide
+  ### guide
   * use this after git add.
 <br></br>
-
+  ## git stash pop
+  * The git stash pop command is used to apply the most recently stashed changes and remove them from the stash.
+  * When you run git stash pop, Git will take the most recent set of stashed changes (the one on top of the stash stack), apply those changes to your working directory and staging area, and then remove that stash from the stash stack.
 <br></br>
 
 <br></br>
