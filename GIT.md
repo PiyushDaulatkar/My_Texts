@@ -12,11 +12,38 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
 
 ## git status
 ## git log
+* To get the history of commits.
 
 <br></br>
 ## git restore --staged demo.txt
 * To remove/revert changes from the staging area.
   ### getting Errors
 * This will give an error if no commits are done, so at least one commit should done before using this command.
+<br></br>
 
-## 
+## git reset <commit hash>
+* It's commonly used to undo changes.
+* To remove changes from the local repository. 
+* use ***--hard*** to discard all changes and move the HEAD to the specified commit. If you only want to move the HEAD without discarding changes, you can use git reset ***--soft***.
+<br></br>
+
+## git stash
+* If you ***don't want to commit*** and also ***don't want to lose those changes***.
+* eg. take a photo of wedding guests and make them go backstage.
+  ## guide
+  * use this after git add.
+<br></br>
+
+<br></br>
+
+<br></br>
+
+<br></br>
+
+<br></br>
+
+<br></br>
+
+<br></br>
+
+<br></br>
