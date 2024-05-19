@@ -1,8 +1,9 @@
 # Git and GitHub
+<br></br>
 ## Structure
 ### Working Directory  >|<  Staging Area  >|<  Local Repository  >|<  Central/Remote Repository
 ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< photo uploaded on goole drive
-
+<br></br>
 ## git restore --staged demo.txt
 * To remove/revert changes from the staging area.
   ### getting Errors
