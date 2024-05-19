@@ -1,2 +1,2 @@
-## git restore --staged demo.txt
-To remove/revert changes from staging area.
+## > git restore --staged demo.txt
+* To remove/revert changes from staging area.
