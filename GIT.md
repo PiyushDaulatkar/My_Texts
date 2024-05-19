@@ -5,6 +5,15 @@
 ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< photo uploaded on google drive
 
 <br></br>
+## git init
+## git add . or name(s) of file(s)
+## git commit -m "message"
+<br></br>
+
+## git status
+## git log
+
+<br></br>
 ## git restore --staged demo.txt
 * To remove/revert changes from the staging area.
   ### getting Errors
