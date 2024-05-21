@@ -41,6 +41,10 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
   * command is used ***to remove all stashed*** changes from the stash stack. It's a way to clean up your repository's stash area by permanently deleting all the stashed changes.
 <br></br>
 
+# Connecting Remote/Central repository to ***existing*** Local repository
+  ##git remote add origin https://github.com/PiyushDaulatkar/demo.git
+  ##git branch -M main
+  ##git push -u origin main
 <br></br>
 
 <br></br>
