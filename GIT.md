@@ -42,7 +42,7 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
 <br></br>
 
 # Connecting Remote/Central repository to ***existing*** Local repository
-  ##git remote add origin https://github.com/PiyushDaulatkar/demo.git
+  ##git remote add origin `https://github.com/PiyushDaulatkar/demo.git`
   ##git branch -M main
   ##git push -u origin main
 <br></br>
