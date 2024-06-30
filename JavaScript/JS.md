@@ -217,16 +217,145 @@ const b = 20; // ok, const should be initialized when declared.
 <br></br>
 
 # Shadowing
-* Inner scope var will shadow outer scope var.
+* Inner scope var will shadow outer scope only for let and const (~~var~~).
+
+```js
+var a = 'vg';
+let l = 'lg';
+const c = 'cg';
+
+function x(){
+    var a = 'vb';
+    let l = 'lb';
+    const c = 'cb';
+
+console.log('fv :>> ', a);  // ??
+console.log('fl :>> ', l);  // ??
+console.log('fc :>> ', c);  // ??
+}
+
+x();
+console.log('gv :>> ', a);
+console.log('gl :>> ', l);
+console.log('gc :>> ', c);
+
+```
+<hr style="border-top: dotted 1px;" />
+
+```js
+// var dereclaration in block
+var v = 'vg';
+{
+    var v = 'vb';
+}
+
+console.log('v :>> ', v);  // ??
+```
+<hr style="border-top: dotted 1px;" />
+
+```js
+// var dereclaration in IF block
+var v = 'vg';
+if (true) {
+    var v = 'vb';
+}
+
+console.log('v :>> ', v);  // ??
+```
+<hr style="border-top: dotted 1px;" />
+
+```js
+// illegal shadowing (same for let and const)
+var v = 'vg';
+{
+    let v = 'vb';
+    console.log('v :>> ', v);  // ??
+}
+
+console.log('v :>> ', v);  // ??
+```
+<hr style="border-top: dotted 1px;" />
+
+```js
+let v = 'vg';
+{
+    var v = 'vb';
+    console.log('v :>> ', v);
+}
+
+console.log('v :>> ', v);  
+// this will give error
+```
+<hr style="border-top: dotted 1px;" />
+
+```js
+// but function will not give error
+let v = 'vg';
+function x() {
+    var v = 'vb';
+    console.log('v :>> ', v);
+}
+x();
+console.log('v :>> ', v);
+```
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
+
+# Closures (useful for nested functions, ***when function returns function***)
+* It is function along with its lexical scope.
+* A closure is the combination of a function bundled together (enclosed) with references to its surroundings state (the lexical environment).
+* In other words, a closure gives you access to an outer function scope from an inner function.
+* Whenever function is returned, even if its vanished in execution context but still it remembers the reference it was pointing to.It's not just that function alone it returns but the entire closure.
+```js
+function x() {
+    var a = 18;
+    function y() {
+        console.log('a :>> ', a);
+    }
+    return y;
+}
+var z = x();
+console.log('z :>> ', z);
+z(); // o/p => 18************
+
+// As y() is nested function so, when x() is called it will return y().
+
+// Now z variable has y().
+
+// When we call z, then y() called.
+
+// But as y() is a nested function inside x() so its memory and all things will be destroyed when x() is removed from call stack so how "y() from z" is able to access variable ' var a' which is in function x(), when x() is not called?
+
+// ANSWER => This is due to closure, Closure is the combination of y() function + reference to its outer(Lexical) environment.
+
+// Hence why function through its closure has access to its outer lexical environment that is function x() and it can access variable 'var a'.
+```
+<hr style="border-top: dotted 1px;" />
+
+```js
+function x() {
+    var a = 18;
+    function y() {
+        console.log('a :>> ', a);
+    }
+    a = 100;
+    return y;
+}
+var z = x();
+console.log('z :>> ', z);
+z(); // ??????
+```
+## Uses of closurre
+* Model design pattern.
+* currying.
+* Functions like once().
+* memoize.
+* Maintain state in Async world.
+* setTimeouts.
+* Iterators.
+* and many more ....
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
-<br></br>
-<hr style="border-top: dotted 1px;" />
-<br></br>
-<br></br>
-<hr style="border-top: dotted 1px;" />
-<br></br>
+
