@@ -1,2 +1,0 @@
-./JavaScript/index.html
-./JavaScript/demo.js
