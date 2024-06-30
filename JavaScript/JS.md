@@ -181,6 +181,11 @@ const b = 20; // ok, const should be initialized when declared.
         <td style=" border: 1px solid;">get memory in <strong>block scope.<strong></td>
     </tr>
     <tr>
+        <td style=" border: 1px solid;">attached to global window object</td>
+        <td style=" border: 1px solid;"></td>
+        <td style=" border: 1px solid;"></td>
+    </tr>
+    <tr>
         <td style=" border: 1px solid;">can be redeclared, reassigned</td>
         <td style=" border: 1px solid;"><strike>redeclared</strike>, but can be reassigned</td>
         <td style=" border: 1px solid;"><strike>redeclared, reassigned</strike></td>
@@ -188,7 +193,7 @@ const b = 20; // ok, const should be initialized when declared.
     <tr>
         <td style=" border: 1px solid;"></td>
         <td style=" border: 1px solid;"></td>
-        <td style=" border: 1px solid;">should be initialized at declaration only</td>
+        <td style=" border: 1px solid;">should be initialized at declaration only.</td>
     </tr>
    </table>
 <br></br>
@@ -210,6 +215,9 @@ const b = 20; // ok, const should be initialized when declared.
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
+
+# Shadowing
+* Inner scope var will shadow outer scope var.
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
