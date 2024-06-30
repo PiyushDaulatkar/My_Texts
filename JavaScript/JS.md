@@ -145,3 +145,80 @@ Whenever a variable is not present in child block, so it tries to search it in i
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
+
+# let & const
+* let and const declarations are hoisted.
+* these are in the temporal dead zone.
+* ***but, if you access them before declaration, then will give reference error because before declaration they are in temporal dead zone.***
+* they are not stored in global(window) space.
+  
+Temporal dead zone: time since when let variable was hoisted and till it is initialized.
+* you access variables in temporal dead zone, they can be accessed after initialization.
+
+```js
+var i = 10;
+var i = 20;  // redeclaration of var is OK.
+
+let i = 10;
+let i = 20;  // redeclaration of let will give error.
+
+const b; // will give error
+const b = 20; // ok, const should be initialized when declared.
+```
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+<table style=" border: 1px solid;">
+    <tr>
+        <td style=" border: 1px solid;">Var</td>
+        <td style=" border: 1px solid;">Let</td>
+        <td style=" border: 1px solid;">const</td>
+    </tr>
+    <tr>
+        <td style=" border: 1px solid;">get memory in <strong>global scope</strong></td>
+        <td style=" border: 1px solid;">get memory in<strong> block scope<strong></td>
+        <td style=" border: 1px solid;">get memory in <strong>block scope.<strong></td>
+    </tr>
+    <tr>
+        <td style=" border: 1px solid;">can be redeclared, reassigned</td>
+        <td style=" border: 1px solid;"><strike>redeclared</strike>, but can be reassigned</td>
+        <td style=" border: 1px solid;"><strike>redeclared, reassigned</strike></td>
+    </tr>
+    <tr>
+        <td style=" border: 1px solid;"></td>
+        <td style=" border: 1px solid;"></td>
+        <td style=" border: 1px solid;">should be initialized at declaration only</td>
+    </tr>
+   </table>
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Block
+* defined by { }.
+* to combine multiple js statement into one group.
+
+### why to group statements?
+* to use grouped statement as a single statement.
+* ex. if() { block }.
+```js
+{
+
+}
+```
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
