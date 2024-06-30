@@ -1,2 +1,2 @@
-JavaScript/index.html
-JavaScript/demo.js
+./JavaScript/index.html
+./JavaScript/demo.js
