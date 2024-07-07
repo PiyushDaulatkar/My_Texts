@@ -359,6 +359,100 @@ z(); // ??????
 <hr style="border-top: dotted 1px;" />
 <br></br>
 
+### Function statement, function expression, function declaration
+* The terms `function statement` and `function expression` refer to two different ways of defining functions in JavaScript.
+```js
+// Function statement aka function declaration
+function a() {
+    console.log("Hello world");
+}
+
+// function expression
+var b = function () {
+
+}
+```
+#### Differnce between Function `statement` & function `expression`
+1. `Usage`: Function expressions offer more flexibility, such as creating anonymous functions or defining functions dynamically. Function declarations are straightforward and are used for more traditional function definitions.
+   
+2. `Hoisting`: Function declarations are hoisted completely, allowing you to call the function before it is declared in the code. Function expressions only hoist the variable declaration, not the function assignment itself.
+
+* During memory creation phase, memory is assigned to `a()` function with its body,
+* but for function expression `b` in memory creation phase a variable `b` is created and assigned value undefined not the function,
+* hence if we try to access `a()` before its declaration it will you no error
+* but if we try to access `b` as it is a variable so if we try to access it before declaration it will give error (as `b` will be undefined).
+```js
+// function declaration
+```
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Anonymous function
+* anonymous function is a function that is defined without a name. Instead of specifying a name after the `function` keyword, you define the function directly as an expression.
+```js
+// Anonymous function expression
+var myFunction = function(parameters) {
+    // Function body
+    // Code to be executed
+};
+```
+### Usage of Anonymous Functions:
+1. As Callbacks: They are commonly used as callback functions, passed as arguments to other functions that expect a function as an argument.
+```js
+// Example of anonymous function as a callback
+setTimeout(function() {
+    console.log("Timeout completed!");
+}, 1000);
+```
+2. Immediately Invoked Function Expressions (IIFE): You can use an anonymous function to create an IIFE, which executes immediately after it’s defined.
+```js
+// Example of IIFE using an anonymous function
+(function() {
+    var message = "Hello, IIFE!";
+    console.log(message);
+})();
+```
+3. Event Handlers: They are also used as event handler functions in DOM manipulation.
+```js
+// Example of anonymous function as an event handler
+document.getElementById("myButton").addEventListener("click", function() {
+    console.log("Button clicked!");
+});
+```
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Named function
+* While assigning function to a variable instead of anonymous function you are giving it a name.
+```js
+var a = function xyz(parameters) {
+    // Function body
+    // Code to be executed
+};
+
+a(); //==> o/p of call ??
+xyz(); //==> o/p of call ??
+```
+* Above function can be only called from the variable(i.e. a()) it is assigned to you cannot call it from its name(~~xyz()~~).
+* If you call it by its name(xyz()) it will give error uncaught reference xyz not defined.
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# First order function
+* The ability of functions to be `used as values` and ability of function to be `passed as an argument` to another function and `can be returned` from the functions, this ability is known as first class functions in javascript.
+
+* i.e. Functions are `first class citizens`.
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Callback function
+
+* In JavaScript, a callback function is a function that is passed as an argument to another function, with the intention of being invoked or called at a later time. Callback functions are a fundamental concept in asynchronous programming, allowing functions to be executed after a certain task is completed, without blocking other operations.
+* It gives us access to the whole asynchronous world in a synchronous single threaded language.
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
