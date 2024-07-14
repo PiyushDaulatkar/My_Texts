@@ -452,11 +452,43 @@ xyz(); //==> o/p of call ??
 # Callback function
 
 * In JavaScript, a callback function is a function that is passed as an argument to another function, with the intention of being invoked or called at a later time. Callback functions are a fundamental concept in asynchronous programming, allowing functions to be executed after a certain task is completed, without blocking other operations.
+
 * It gives us access to the whole asynchronous world in a synchronous single threaded language.
+* Main thread executes call stack.
+
+### Blocking main thread
+* Functions which take long time to execute, like `settimeout()` with 5 second timer, the main thread is blocked for five seconds.
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
 
+## How to count clicks on a button
+
+### Approach 1
+* declare a global variable and increment it on count..
+* Drawback: less secure, any-other function can modify the vaiable.
+### Approach 2
+* create a function and declare a variable in it.
+```js
+function attachEventListner() {
+     let count=0;
+     document.getElementById("clickme").addEventListener("click", function xyz() {
+    console.log('button clicked ....', count++);
+});
+}
+
+attachEventListner();
+``` 
+* when `attachEventListner()` is called count variable is created, but it will not get destroyed because it will be present in `closure` of function xyz().
+* Hence, only function inside `attachEventListner()` can only access count variable.
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Garbage collection and remove EventListner
+* Event listeners are heavy (i.e. they consume memory).
+* (Because even if its callback function is not in call stack, then also `eventListner` maintenances it and its closure).
+* Hence you should remove `eventListner` when not required anymore. 
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>

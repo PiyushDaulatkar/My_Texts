@@ -1,5 +1,7 @@
-var a = function xyz() {
-    console.log('xyz :>> ', xyz);
+function attachEventListner() {
+    let count=0;
+    document.getElementById("clickme").addEventListener("click", function xyz() {
+   console.log('button clicked ....', count++);
+});
 }
-
-a();
+attachEventListner();
