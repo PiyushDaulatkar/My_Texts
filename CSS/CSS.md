@@ -197,3 +197,11 @@ div.bold-text {
 * when you specify flex-grow or flex-shrink, flex items do not necessarily respect your given values for width. In the above example, all 3 divs are given a width of 250px, but when their parent is big enough, they grow to fill it. Likewise, when the parent is too small, the default behavior is for them to shrink to fit. This is not a bug, but it could be confusing behavior if you aren’t expecting it.
 
 * There is a difference between the default value of flex-basis and the way the flex shorthand defines it if no flex-basis is given. The actual default value for flex-basis is auto, but when you specify flex: 1 on an element, it interprets that as flex: 1 1 0. If you want to only adjust an item’s flex-grow you can do so directly, without the shorthand. Or you can be more verbose and use the full 3 value shorthand flex: 1 1 auto, which is also equivalent to using flex: auto.
+
+* `flex-grow`: how much with that flex item will ***grow*** ***relative*** to other elements in that flexible container.
+* `flex-shrink`: how much with that flex item will ***shrink*** ***relative*** to other elements in that flexible container.
+
+* `flex-basis`:  the ***initial main size*** of the flex item, ***before free space*** is distributed according to the flex factors.
+```css
+gap: 8px;
+```
