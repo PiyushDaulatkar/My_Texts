@@ -206,3 +206,12 @@
         <td>console timeEnd</td>
     </tr>
 </table>
+<br><br>
+
+
+# Debug
+* For `array` and `objects`
+```js
+console.table(person);
+```
+* console.trace(string);

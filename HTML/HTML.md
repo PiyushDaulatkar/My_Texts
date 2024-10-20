@@ -150,8 +150,3 @@ e.x.
 <a href="/about-us">About Us</a>
 ```
 <br><br>
-
-# HTML vs DOM
-* HTML represents initial page content
-* DOM represents current page content(after changes by javascript).
-<br><br>
