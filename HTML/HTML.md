@@ -150,3 +150,23 @@ e.x.
 <a href="/about-us">About Us</a>
 ```
 <br><br>
+
+# [Emmet Shortcuts](https://docs.emmet.io/cheat-sheet/)
+<br><br>
+
+# SVG(Scalable Vector Graphics)
+* SVGs are a scalable image format, which means they will easily scale to any size and retain their quality without increasing their filesize.
+* They’re also very useful if you need to create or modify your images programmatically, because you can change their properties through CSS and JavaScript.
+
+* SVGs are often used for:
+  1. Icons
+  2. Graphs/Charts
+  3. Large, simple images
+  4. Patterned backgrounds
+  5. Applying effects to other elements via SVG filters.
+
+* Vector graphics are images defined by math, as opposed to traditional “raster graphics”, where your image is defined by a grid of pixels.
+* With vector graphics on the other hand, there’s no grid. Instead, you have formulas for different shapes and lines. Since these are just formulas, it doesn’t matter how large or small you want them to appear–they can scale to any size you want, and it will have no effect on the quality or the size of the file.
+* SVG is defined using XML. XML (aka, “Extensible Markup Language”) is an HTML-like syntax which is used for lots of things, from APIs, to RSS, to spreadsheet and word editor software.
+* Benefit of XML is that it’s designed to be interoperable with HTML, which means you can put the above code directly in an HTML file, without any changes, and it should display the image. And because these can become elements in the DOM just like HTML elements, you can target them with CSS and create them using the Element.
+* Adobe Illustrator and Figma are two popular apps that can create SVGs

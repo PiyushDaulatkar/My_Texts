@@ -58,6 +58,9 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
 * ex. git
 <br></br>
 
+# Git to change git token
+* github > settings > accounts > developer settings > Personal accesss token > Tokens (classic) > (from lists of token click on expired token) > regenrate the token > Regenrate token.
+
 <br></br>
 
 <br></br>

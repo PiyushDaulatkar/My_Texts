@@ -205,3 +205,44 @@ div.bold-text {
 ```css
 gap: 8px;
 ```
+<br><br>
+
+# CSS resets
+* These resets are stylesheets containing CSS rules aimed at altering or removing the defaults set by user-agent(browser) stylesheets.
+* To address inconsistencies across browsers and establish a consistent starting point for styling, some developers started using CSS resets.
+<br><br>
+
+# Normalize.css
+Instead of removing styles, Normalize.css adjusts them. It improves the consistency of elements like forms, buttons, and headings without completely stripping their default styles.
+* Reset: Removes all default styling.
+* Normalize: Retains useful styles and makes them consistent.
+<br><br>
+
+
+# Units
+## Absolute units
+* Absolute units are those that are always the same in any context.
+* ex: `px` (`in`,`cm` generally use only for printing).
+
+## Relative units
+* Relative units are units that can change based on their context.
+* ex: `em`, `rem`
+### em
+
+* em is a unit that relates to the ***font size*** of an element or its parent element.
+* For example, if you have a text element with a font size of 16 pixels, then:
+If you set its width to 4em, it would be 64 pixels wide (because 16px × 4 = 64px).
+
+### rem
+* rem stands for "root em" and is based on the ***font size*** of the root element of the page (either `:root` or `html`).
+* Using a relative size like rem to define font sizes across your website is recommended.
+
+## Viewport units (vh, vw, vmin & vmax)
+* The units `vh` and `vw` relate to the size of the viewport. Specifically, `1vh` is equal to ***1% of the viewport height*** and `1vw` is equal to ***1% of the viewport width***.
+* These can be useful any time you want something to be sized relative to the viewport.
+* The term viewport refers to the visible area of a webpage in a web browser. It’s essentially the part of the screen where users can see content.
+
+## ch
+* The ch unit in CSS stands for "character unit".
+* It is based on the width of the "0" (zero) character in the current font.
+* e.g. : If you want to set paragraph width to fit 75 chars (75ch).

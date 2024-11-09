@@ -24,3 +24,10 @@
 * It will be used in place of the image if it cannot be loaded.
 * It is also used with screen readers to describe what the image is to visually impaired users.
 <br><br>
+
+# caption (for table)
+```html
+<caption>
+    Dinosaurs in the Jurassic period
+  </caption>
+```
