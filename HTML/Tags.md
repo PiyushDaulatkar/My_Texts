@@ -30,3 +30,13 @@
   <dt>work</dt>
   <dd>A person's regular occupation, profession, or trade</dd>
 </dl>
+
+# HTML shortcut
+* div[style="display:grid;"]>div{Item$}*3
+```html
+<div style="display:grid;">
+    <div>Item1</div>
+    <div>Item2</div>
+    <div>Item3</div>
+</div>
+```

@@ -246,3 +246,159 @@ If you set its width to 4em, it would be 64 pixels wide (because 16px × 4 = 64p
 * The ch unit in CSS stands for "character unit".
 * It is based on the width of the "0" (zero) character in the current font.
 * e.g. : If you want to set paragraph width to fit 75 chars (75ch).
+<br><br>
+
+# Positioning
+* Static positioning.
+* relative positioning.
+* absolute positioning.
+* fixed positioning.
+* sticky positioning.
+
+## Static positioning.
+* The default positioning mode of every element is `position: static`.
+* `top`, `right`, `bottom`, and `left` <span style="color:pink">***do not affect***</span> the position of the element.
+
+## relative positioning.
+* Allows you to change the position of the element <span style="color:gold">***relative to where it normally would***</span> be in the document flow if it was static.
+* `top`, `right`, `bottom`, and `left` <span style="color:red">***will affect***</span> the position of the element.
+* It moves out of document flow. Hence elements near to it will not be affected.
+* (do not use).
+
+## absolute positioning.
+* mostly used.
+* It completely removes the element from document flow.
+* And other things render such as that element didnt exist.
+* `top`, `right`, `bottom`, and `left` <span style="color:red">***will affect***</span> the position of the element.
+* ***Element will be placed absolutely from its nearest parent(relative, absolute,fixed, sticky, <s>static</s>)*** {i.e. top will apply from nearest elative, absolute,fixed, sticky ancestor}.
+
+## fixed positioning.
+* They are position based on entire html  element(root).
+* Completely ignores parent positioning.
+* ***Stay in the same place when you scroll***.
+
+## sticky positioning.
+* Combination of relative and fixed positioning.
+* Sticky elements will act like normal elements until you scroll past them, then they start behaving like fixed elements.
+<br><br>
+
+# CSS functions
+* min(), max(), and clamp()
+* calc() >> for  performing basic math operations, with the ability to interpolate between unit types (ex. rem to vw).
+* var() >> accepts two parameters. The first parameter is the custom property we want to assign. The second parameter is an optional fallback value.
+  * When a fallback value is provided in addition to a custom property, the fallback value will be used if the custom property is invalid or hasn’t been declared yet.
+  ```css
+  .fallback {
+  --color-text: white;
+
+  background-color: var(--undeclared-property, black);
+  color: var(--undeclared-again, var(--color-text, yellow));
+  }
+  /* In the above example, our background-color property would have a value of black and our color property would have a value of white. If the --color-text custom property was invalid or didn’t exist, the fallback to our fallback would take over and the color property would have a value of yellow. */
+  ```
+<br><br>
+
+# Custom properties (CSS variables)
+* By using custom properties, instead of having to update every single instance of a specific value (“This shade of red is too light, let’s change the shade on all seven of these selectors”), we only need to update a single instance: the custom property itself.
+* custom properties can help us keep colors consistent throughout a project, something that will be really helpful as projects get larger.
+
+### How to declare custom properties.
+```css
+.error-modal {
+  --color-error-text: red;
+  --modal-border: 1px solid black;
+  --modal-font-size: calc(2rem + 5vw);
+
+  color: var(--color-error-text);
+  border: var(--modal-border);
+  font-size: var(--modal-font-size);
+}
+```
+* casing : start with `--` & seperated by `-`(Kebab case (single hyphens to separate words)).
+
+### The scope of custom properties.
+* Define a custom property inside a specific selector (like a class or element), it ***applies to that selector and any of its child elements***.
+```html
+<!-- In the example below, only the element with the cool-paragraph class would get styled with a red background since it’s a descendant of the element where our custom property is declared. -->
+<div class="cool-div">
+  <p class="cool-paragraph">Check out my cool, red background!</p>
+</div>
+
+<p class="boring-paragraph">I'm not in scope so I'm not cool.</p>
+```
+```css
+.cool-div {
+  --main-bg: red;
+}
+
+.cool-paragraph {
+  background-color: var(--main-bg);
+}
+
+.boring-paragraph {
+  background-color: var(--main-bg);
+}
+```
+> [!NOTE]
+> ***To access a custom property use var().***
+> 
+> Variables do not work inside media queries and container queries.
+
+### The :root selector.
+* Declaring here is like global variables.
+```html
+<p class="cool-paragraph">Lorem ipsum dolor sit amet.</p>
+
+<p class="exciting-paragraph">Lorem ipsum dolor sit amet.</p>
+```
+```css
+:root {
+  --main-color: red;
+}
+
+.cool-paragraph {
+  color: var(--main-color);
+}
+
+.exciting-paragraph {
+  background-color: var(--main-color);
+}
+```
+* By declaring our custom property on the :root selector in the example above, we can access it on any other valid selector within our CSS file, since any other selector would be considered a descendant of the :root selector.
+* USECASE : ```to add themes```.
+
+### Using media queries.
+
+<br><br>
+
+# CSS data types
+<br><br>
+
+# CSS Framework
+* Bootstrap
+* Tailwind
+* Bulma
+* Foundation
+<br><br>
+
+# CSS Preprocessors
+*  SASS
+*  LESS
+*  Stylus.
+<br><br>
+
+# CSS GRID vs Flexbox
+<table>
+<tr>
+<th>Flexbox</th>
+<th>Grid</th>
+</tr>
+<tr>
+<td>1D</td>
+<td>2D</td>
+</tr>
+<tr>
+<td></td>
+<td>Overlap items.</td>
+</tr>
+<table>

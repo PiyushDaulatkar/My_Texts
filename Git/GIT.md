@@ -63,4 +63,11 @@ ex: people in wedding >|< people go to stage to take photo >|< photo taken >|< p
 
 <br></br>
 
+# Uncommit the Last Commit (And Remove Changes from Staging Area)
+
+> git reset --mixed HEAD~1
+
+# Uncommit the Last Commit (And Remove Changes Completely)
+> git reset --hard HEAD~1
+
 <br></br>

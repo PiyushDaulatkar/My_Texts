@@ -36,7 +36,6 @@ e.g. `<html>` abcd `</html>`
 
 # HTML attributes
 
-* 
 <br><br>
 
 # Head element
@@ -169,4 +168,30 @@ e.x.
 * With vector graphics on the other hand, there’s no grid. Instead, you have formulas for different shapes and lines. Since these are just formulas, it doesn’t matter how large or small you want them to appear–they can scale to any size you want, and it will have no effect on the quality or the size of the file.
 * SVG is defined using XML. XML (aka, “Extensible Markup Language”) is an HTML-like syntax which is used for lots of things, from APIs, to RSS, to spreadsheet and word editor software.
 * Benefit of XML is that it’s designed to be interoperable with HTML, which means you can put the above code directly in an HTML file, without any changes, and it should display the image. And because these can become elements in the DOM just like HTML elements, you can target them with CSS and create them using the Element.
-* Adobe Illustrator and Figma are two popular apps that can create SVGs
+* Adobe Illustrator and Figma are two popular apps that can create SVGs.
+<br><br>
+
+# Grid
+* Grid Container
+  * The element on which display: grid is applied.
+* Grid Item
+  * The children (i.e. direct descendants) of the grid container.
+* Grid Line
+  * The dividing lines that make up the structure of the grid. They can be either vertical (“column grid lines”) or horizontal (“row grid lines”).
+* Grid Cell
+  * The space between two adjacent row and two adjacent column grid lines. It’s a single “unit” of the grid.
+* Grid Track
+  * The space between two adjacent grid lines.
+  * You can think of them as the columns or rows of the grid.
+
+* Grid Area
+  * The total space surrounded by four grid lines.
+  * A grid area may be composed of any number of grid cells.
+## Lines and tracks in grid
+* Grid lines are the dividing lines that separate rows and columns in a grid. They are like invisible "borders" that help define the structure of the grid. These lines are numbered, starting from 1, and can be referred to both from the left (for columns) or from the top (for rows).
+
+  * Column Lines: Vertical lines that separate the columns.
+  * Row Lines: Horizontal lines that separate the rows.
+<br><br>
+
+# Columns and rows

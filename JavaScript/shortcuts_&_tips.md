@@ -61,6 +61,7 @@
         <td>exports default class by extending a base one</td>
     </tr>
 </table>
+
 ### Class helpers
 <table>
     <tr>
@@ -84,6 +85,7 @@
         <td>creates a setter property</td>
     </tr>
 </table>
+
 ### Various methods
 <table>
     <tr>
@@ -135,6 +137,7 @@
         <td>adds then and catch declaration to a promise</td>
     </tr>
 </table>
+
 ### Console methods
 <table>
     <tr>
