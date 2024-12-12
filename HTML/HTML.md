@@ -173,7 +173,7 @@ e.x.
 
 # Grid
 * Grid Container
-  * The element on which display: grid is applied.
+  * The element on which `display:grid` is applied.
 * Grid Item
   * The children (i.e. direct descendants) of the grid container.
 * Grid Line
@@ -194,4 +194,5 @@ e.x.
   * Row Lines: Horizontal lines that separate the rows.
 <br><br>
 
-# Columns and rows
+## Developers tool > elements > layout panel. 
+* For grid and flexbox tools.
