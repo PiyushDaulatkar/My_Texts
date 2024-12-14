@@ -232,6 +232,29 @@ function doubleItem(item) {
 */
 console.log(doubled); // [2, 4, 6]
 ```
+### Main use of arrow function
+* `this` keyword in arrow function refers to ***outer scope*** not to current scope. 
+```js
+// with arrow function
+const user = {
+    fname: 'a',
+    lname: 'b',
+    fullname: () => {
+       console.log(this); //window object
+       console.log(this.fname + " " + this.lname) //undefined undefined
+    }
+};
+//vs
+// without arrow function
+const user = {
+    fname: 'a',
+    lname: 'b',
+    fullname: () => {
+       console.log(this); //user object
+       console.log(this.fname + " " + this.lname) //a b
+    }
+};  
+```
 <br><br>
 
 # Types of errors in javascript

@@ -329,7 +329,7 @@ z(); // o/p => 18************
 
 // ANSWER => This is due to closure, Closure is the combination of y() function + reference to its outer(Lexical) environment.
 
-// Hence why function through its closure has access to its outer lexical environment that is function x() and it can access variable 'var a'.
+// Hence y() function through its closure has access to its outer lexical environment that is function x() and it can access variable 'var a'.
 ```
 <hr style="border-top: dotted 1px;" />
 
@@ -346,7 +346,23 @@ var z = x();
 console.log('z :>> ', z);
 z(); // ??????
 ```
-## Uses of closurre
+```js
+function makeAdding (firstNumber) {
+  // "first" is scoped within the makeAdding function
+  const first = firstNumber;
+  return function resulting (secondNumber) {
+    // "second" is scoped within the resulting function
+    const second = secondNumber;
+    return first + second;
+  }
+}
+
+const add5 = makeAdding(5);
+console.log(add5(2)) // logs 7
+```
+## Uses of [Closure](https://www.youtube.com/watch?v=80O6L2Ez3GM)
+* ***For saving state of outer variables***.
+* Can create ***private variables***.
 * Model design pattern.
 * currying.
 * Functions like once().
@@ -492,3 +508,67 @@ attachEventListner();
 <br></br>
 <hr style="border-top: dotted 1px;" />
 <br></br>
+
+# prototype
+* In JavaScript, every object has a hidden link to another object called its prototype. This prototype is like a parent or blueprint for that object.
+
+* The prototype is another object that the original object inherits from, which is to say, the original object has access to all of its prototype’s methods and properties.
+
+### Prototypal inheritance
+  * ***To save memory***: Defining every property and function takes up a lot of memory, especially if you have a lot of common properties and functions, and a lot of created objects! Defining them on a centralized, shared object which the objects have access to, thus saves memory.
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Immediately Invoked Function Expression ( IIFE )
+* An Immediately Invoked Function Expression (IIFE) is a JavaScript function that is executed immediately after it is defined.
+* SYNTAX
+  * ***The syntax involves wrapping the function in parentheses and then immediately invoking it with ()***.
+```js
+(function() {
+    // Code to be executed immediately
+    console.log("IIFE executed!");
+})();
+
+// OR
+
+const calculator = (function () {
+  const add = (a, b) => a + b;
+  const sub = (a, b) => a - b;
+  const mul = (a, b) => a * b;
+  const div = (a, b) => a / b;
+  return { add, sub, mul, div };
+})();
+
+calculator.add(3,5); // 8
+calculator.sub(6,2); // 4
+calculator.mul(14,5534); // 77476
+```
+### Why Use IIFE?
+* ***Avoid Global Variable Pollution***: IIFEs create a new scope, so variables inside them don’t interfere with variables in the global scope.
+
+* ***Data Privacy***: Variables inside an IIFE are private and cannot be accessed from outside the function.
+
+* ***Initialization Code***: Useful for running initialization code that doesn't need to persist.
+
+* ***Modularity***: Helps in grouping related code together in a self-contained unit.
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# Module pattern in JavaScript
+* The Module Pattern in JavaScript is a way to organize code into a single unit (called a module). This module can have private parts (hidden from the outside) and public parts (accessible to the outside). It helps keep your code clean, avoids messing up the global scope, and makes it easier to reuse and maintain.
+
+* A module is a construct somewhat similar to a singleton class. It has only one instance and exposes its members, but it doesn’t have any kind of internal state.
+
+### Key Features
+* ***Encapsulation***:
+Provides a way to encapsulate private data and expose only what is necessary.
+Prevents unintentional modification of internal logic by external code.
+
+* ***Namespaces***:
+Avoids polluting the global namespace by wrapping functionality in a single object or function.
+* ***Reusability***:
+Encourages modular and reusable code.
+* ***Closures***:
+Uses closures to maintain private state and expose public APIs.
