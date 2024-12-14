@@ -569,4 +569,55 @@ array.reduce((accumulator, currentValue, index, array) => {
   3. Index (optional): The index of the current element being processed.
 
   4. Array (optional): The array that reduce() was called upon.
+<br></br>
+<br></br>
 
+# Import and export
+* Two types of importing and exporting:
+   1. ***default***
+   2. ***named***
+
+### Default export
+* A file can only default export a ***single*** thing.
+* Something exported this way does not have a name attached to it, so when you import it somewhere, you can decide what name to give it.
+
+### key difference
+<table style="border-style: solid;">
+<thead style="border-style: solid;">
+<tr>
+<td>named export</td>
+<td>default export</td>
+<td></td>
+</tr>
+</thead>
+<tboby>
+<tr>
+<td>one or more things can be exported.
+</td>
+<td>only single thing can be exported from a file.</td>
+<td></td>
+</tr>
+<tr>
+<td>need to import with same name as export (but can bbe renamed using *as* keyword).</td>
+<td>can import with any name.</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>for *inline* export default there is no need to specify var, let, or const explicitly in the export.</td>
+<td></td>
+</tr>
+<tr>
+<td>should use {} in import or will give syntax error.</td>
+<td>should not use <strike>{}</strike> in import or will give syntax error.</td>
+<td>syntax difference</td>
+</tr>
+<tr>
+<td>import {b} from './app2.js'</td>
+<td>import b from './app2.js'</td>
+<td>syntax ex.</td>
+</tr>
+</tbody>
+</table>
+
+* You can use both default and named exports in the same file.

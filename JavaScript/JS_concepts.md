@@ -572,3 +572,9 @@ Avoids polluting the global namespace by wrapping functionality in a single obje
 Encourages modular and reusable code.
 * ***Closures***:
 Uses closures to maintain private state and expose public APIs.
+<br></br>
+<hr style="border-top: dotted 1px;" />
+<br></br>
+
+# ES6 Modules (ESM)
+* Each ***file*** has its own ***private scope*** by default, and not only can we choose what things we ***export*** from that file, we can also choose what things we ***import*** into other files.
