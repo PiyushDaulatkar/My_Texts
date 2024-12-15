@@ -578,3 +578,38 @@ Uses closures to maintain private state and expose public APIs.
 
 # ES6 Modules (ESM)
 * Each ***file*** has its own ***private scope*** by default, and not only can we choose what things we ***export*** from that file, we can also choose what things we ***import*** into other files.
+<br></br>
+<br></br>
+
+# npm
+* fullform > ***npm is not an acronym***.
+<br></br>
+<br></br>
+
+# Bundling
+* Bundling is the process of combining multiple JavaScript files (and other assets like CSS and images) into a single file (or a few files) based on a dependency graph built from an entry point.
+
+* This reduces the number of HTTP requests and ensures all necessary code is included for the application to run efficiently.
+
+# Webpack
+* ***PROBLEM*** > For browser, downloading a large number of module files individually can reduce performance, especially as more third party files(packages) are imported.
+* ***SOLUTION***: Webpack(bundling).
+
+* Webpack is one of the most popular JavaScript bundlers.
+
+#### src and dist
+* src (short for “source”)
+* dist (short for “distribution”).
+
+* ***src*** : it is where we keep all of our website’s source code.
+* ***dist***: when we run Webpack to bundle our code, it will output the bundled files into the dist directory.
+* Usecase:
+  1. We can only share src and others can run webpack command to build dist from src.
+  2. Similarly, to deploy our website, we would only need the dist code and nothing else.
+
+  3. ***Work inside src, build into dist, then deploy from there!***
+
+* Webpack allows you to omit file extensions like .js in import paths by automatically resolving them during the bundling process.
+  * ex:  (e.g. "./greeting") or  (e.g. "./greeting.js")
+* To bundle owr code, we’ll need a ***Webpack configuration file*** in ***root***, which will contain all the details we need for bundling, such as the ***entry point***, the ***output destination***, and anything like plugins and loaders.
+* 
