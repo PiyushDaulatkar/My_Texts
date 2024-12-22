@@ -612,4 +612,3 @@ Uses closures to maintain private state and expose public APIs.
 * Webpack allows you to omit file extensions like .js in import paths by automatically resolving them during the bundling process.
   * ex:  (e.g. "./greeting") or  (e.g. "./greeting.js")
 * To bundle owr code, we’ll need a ***Webpack configuration file*** in ***root***, which will contain all the details we need for bundling, such as the ***entry point***, the ***output destination***, and anything like plugins and loaders.
-* 
