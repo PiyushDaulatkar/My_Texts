@@ -203,8 +203,89 @@ Promise.all([task1, task2, task3])
 
 <br>
 <hr><br>
+
+# Async and Await keywords
+* `await` must always be used inside an `async` function.
+  * If you try to use await outside of an async function, it will throw a syntax error.
+* `async` does not require `await` to be used inside it.
+
+## async
+* The async keyword is what lets the JavaScript engine know that you are declaring an asynchronous function.
+
+* Functions declared with `async` ***automatically return a Promise***.
+* And you can use the `await` keyword inside them to pause execution until a Promise is resolved.
+* ***Returning in an async function is the same as resolving a promise. Likewise, throwing an error will reject the promise.***
+
+### Why Use async?
+* ***To make asynchronous code look and behave like synchronous code.***
+* ***To handle Promises without chaining .then() calls***.
+
+* To reduce complexity when working with multiple asynchronous operations.
+
+### Without await
+* ***Without await***: The async function will always return a Promise, regardless of whether you use await inside it or not.
+
+* ***With await***: The async function still returns a Promise. However, within the function, await pauses execution until the Promise resolves, so you get the resolved value directly in your code (inside the function).
+* ***The key point is***: An async function always returns a Promise, but await lets you work with the resolved value more easily inside the function.
+```js
+// without await
+
+async function withoutAwait() {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve("Resolved Value"), 2000)
+  );
+}
+
+// Calling the function
+withoutAwait().then((result) => console.log(result)); // Output after 2s: "Resolved Value"
+```
+```js
+// with await
+
+async function withAwait() {
+  const result = await new Promise((resolve) =>
+    setTimeout(() => resolve("Resolved Value"), 2000)
+  );
+  console.log(result); // Output: "Resolved Value"
+}
+
+// Calling the function
+withAwait(); // Logs "Resolved Value" after 2 seconds
+
+// Function still returns a Promise
+console.log(withAwait()); // Logs: Promise { <pending> }
+```
+* It’s like a ‘pause until done’ keyword. The await keyword is used to get a value from a function where you would normally use .then().
+
+* Instead of calling .then() after the asynchronous function, you would assign a variable to the result using `await`.
+* Then you can use the result in your code as you would in your synchronous code.
+
+## Error handling
+### Method 1:
+*  Promises have the .catch() method for handling rejected promises, and since async functions just return a promise, you can call the function, and append a .catch() method to the end.
+```js
+asyncFunctionCall().catch(err => {
+  console.error(err)
+});
+```
+### Method 2:
+* If you want to ***handle the error directly inside the async function***, you can use `try/catch` with async/await syntax.
+```js
+async function getPersonsInfo(name) {
+  try {
+    const people = await server.getPeople();
+    const person = people.find(person => { return person.name === name });
+    return person;
+  } catch (error) {
+    // Handle the error any way you'd like
+  }
+}
+```
+### async/await does not make the code or function synchronous. Instead, it provides a way to write asynchronous code in a style that looks and behaves more like synchronous code, without blocking the main thread.
+
 <br>
 <hr><br>
+
 <br>
 <hr><br>
 <br>
