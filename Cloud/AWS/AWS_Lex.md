@@ -82,3 +82,29 @@
 It is a way of displaying detailed information about a single item to the user in a visually appealing way. Instead of just sending plain text, the information is structured in a card that can include things like a title, a description, an image, and buttons.
 
 ### Card-Group response
+
+## Intent state
+
+1. Failed
+   * Meaning: The bot could not fulfill the intent due to an error or user action (e.g., incomplete slot values, unexpected inputs, or an error in fulfillment logic).
+   * Example: A user starts booking a flight but provides invalid details or exits the conversation before completing the required steps.
+2. Fulfilled
+   * Meaning: The intent has been successfully fulfilled by the bot, often through a fulfillment Lambda function or other backend system.
+   * Example: The bot confirms: "Your flight to New York on Monday has been successfully booked."
+3. InProgress
+   * Meaning: The bot is actively eliciting slot values from the user to complete the intent. It asks follow-up questions until all required slots are filled or an exit condition is triggered.
+   * Example: The bot asks:
+     * "Where would you like to fly?"
+     * "When do you want to leave?"
+
+4. ReadyForFulfillment
+   * Meaning: The bot has successfully gathered all required slot values for the intent and is ready to trigger the fulfillment action.
+   * Example: After collecting the destination, date, and time for a flight booking, the bot prepares to call a Lambda function or an external API to finalize the booking.
+5. Waiting
+   * Meaning: The bot is waiting for the user's input, especially during streaming conversations. This state occurs when the bot has paused to let the user respond.
+   * Example: In a real-time chat or voice interaction, the bot waits for the user to say "New York" when asked for a destination.
+
+# Session state
+# Dialog action
+
+# Conversational AI & chatbot
