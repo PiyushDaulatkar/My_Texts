@@ -3,13 +3,17 @@
 <br/><br/>
 
 ### To create new angular project.
-### `ng new <project-name>`
+* `ng new <project-name>`
 * project name convention:
   * lower case
   * `-` seperated.
-### `npm start` or `ng serve`
-* To start application.
+### To start application.
+* `npm start` or `ng serve`
+### To create component
+* `ng generate component comp`
+* or `ng g c comp`.
 <br/><br/>
+
 
 # VS code extensions
 * Angular Language Service (by angular.dev).

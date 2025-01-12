@@ -13,25 +13,3 @@
 <hr><br>
 
 
-
-<hr><br><br>
-
-
-<hr><br><br>
-
-
-<hr><br><br>
-
-
-<hr><br><br>
-
-
-<hr><br><br>
-
-
-<hr><br><br>
-
-<hr><br><br>
-
-<hr><br><br>
-<hr><br><br>
