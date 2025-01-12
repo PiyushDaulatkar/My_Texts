@@ -1,4 +1,52 @@
-What is module?
+# What is angular?
+* Angular is a frontend JS framework.
+
+* It helps building interactive, modern web user interfaces.
+* It's also a collection of tools and features (CLI, debugging tools, IDE plugin). 
+<br><br>
+
+# Why to use angular?
+* ***Simplifies the process*** of building complex, interactive web user interfaces.
+
+1. With angular ***you write declarative code***.
+   * In simple terms, declarative code means you tell Angular what you want, and Angular takes care of how to do it.
+   * Example: below you simply declare that the `<div>` should be shown if `isVisible` is true.
+   * ***Angular takes care of updating the DOM when `isVisible` changes***.
+```html
+<div *ngIf="isVisible">Hello, World!</div>
+```
+2. Seperation of concerns via components.
+
+3. Uses some OOP concepts & priciples.
+
+4. Use Typescript.
+<br><br>
+
+> [!NOTE]
+> Angular is stable framework.
+> It is evolving framework.
+> Has ***backward compatibility***.
+
+<br><br>
+
+# History
+1st version > Angualar JS. <br/>
+2nd version > Angular 2 (released 2016).<br/>
+.<br/>
+.<br/>
+.<br/>
+Angular 14 (introduces standalone component).<br/>
+Angular 16 (introduces signals).<br/>
+<br/>
+
+# Angular CLI
+* The Angular CLI is a command-line interface tool which allows you to scaffold, develop, test, deploy, and maintain Angular applications directly from a command shell.
+
+* To convert/compile angular code into code that runs into browser.
+* To run angular project you need node and npm installed.
+
+# What is module?
+<br><br>
 
 # What is a <span style=color:Pink>***Directive***</span> in Angular?
 * In Angular, a ***directive*** is a <span style=color:red>***class***</span> that allows you to <span style=color:gold>***manipulate the DOM (Document Object Model) or change the behavior of elements***</span> in the user interface (UI).
