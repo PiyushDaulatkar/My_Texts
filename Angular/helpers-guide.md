@@ -11,7 +11,8 @@
 * `npm start` or `ng serve`
 ### To create component
 * `ng generate component comp`
-* or `ng g c comp`.
+* or `ng g c comp`
+* or `ng g c folder/comp --skip-tests`.
 <br/><br/>
 
 
