@@ -1,0 +1,1 @@
+To allow for multiple types in a single value you can use Union Types: `myVal: number | string`

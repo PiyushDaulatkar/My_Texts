@@ -19,3 +19,9 @@
 # VS code extensions
 * Angular Language Service (by angular.dev).
 * Angular Essentials (Version 18) (by John Papa).
+<br/><br/>
+
+# Angular devtools
+* It is Browser extension.
+* With this installed you can get new tab in dev tools called `Angular` in developer tools.
+

@@ -129,6 +129,11 @@ In line 4, we tell Angular to bootstrap (initialize) the `AppComponent`, which i
   .catch((err) => console.error(err));
 6. bootstrapApplication(AnotherComponent, appConfig);
 ```
+
+>[!IMPORTANT]
+> Above `main.ts` code is valid only for `standalone components` (i.e. `AppComponent`, `AnotherComponent` should be `standalone components`).  
+> For Modules, bootstraping angular app is described later in notes.
+
 <br/><br/>
 
 # Linking HTML Files or Markup in Standalone Components (Angular)
@@ -404,8 +409,8 @@ x = input.required<string>(); // with required you cannot set default value.
 ```
 * To make input as signal, ***we dont neccesarliy need to pass it signal object***.
 
-* input signals are readonly, i.e. you can call set function on them and change there values.
-* There values can only be changed if you pass different value to component for fere ex:
+* input signals are readonly, i.e. you can notcall set function on them and change there values.
+* There values can only be changed if you pass different value to component form here ex:
 ```html
 <app-user [x]="users[0].avatar" [y]="users[0].name"/>
 
@@ -415,7 +420,7 @@ x = input.required<string>(); // with required you cannot set default value.
 ```
 <br/><br/>
 
-# # ***Component Outputs*** (passing data from child component to parent component)
+# ***Component Outputs*** (passing data from child component to parent component)
 * You can send data from a component to its parent using `events`.
 * The `@Output` decorator is used ***to define properties*** that a child component can ***emit as events*** for the parent component to listen to.
 1. Create an Output Event in the Child Component:
@@ -695,7 +700,7 @@ class TasksService() {
   constructor(private taskService: TasksService) {
   }
 ```
-#### DI way 1: inject() function
+#### DI way 2: inject() function
 ```ts
 import { inject } from '@angular/core';
 
@@ -705,18 +710,289 @@ export class NewTaskComponent {
 ```
 <br/><br/>
 
+# What is Angular `modules`?
+* Angular modules make component (& more) available to each other.
 
-
-
-
-
-
-
-
-# What is module?
+* Famous on older versions of angular.
+* Angular `modules`: here you ***don't specify at component level*** which components that component uses in its template.
+* `Standalone component`: you specify at component level which components that component uses in its template.
 <br><br>
 
-# What is a <span style=color:Pink>***Directive***</span> in Angular?
+### Creating module
+* Create `root app module` next `root app component`.
+* Add `@NgModule` over class.
+* In declarations you declare & register `components` and `directives` that need to work together.
+
+* `Standalone components` ***cannot be added*** in `NgModule declarations`.
+```ts
+import { NgModule } from '@angular/core'
+
+@NgModule({
+  declarations: []
+})
+export class AppModule {}
+```
+
+### main.ts
+* Bootstraping Angular application with `module`.
+```ts
+import { platformBrowserDynamic} from '@angular/platform-browser-dynamic'
+import { AppModule } from './app/app.module'
+
+platformBrowserDynamic().bootstrapModule(AppModule);
+```
+* Also in AppModule specify root components you wanna set for your application in `bootstrap` array.
+```ts
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+<br/><br/>
+
+# Using `standalone components` in `Module`
+* Decalare standalone components in `imports` array of `@NgModule`.
+```ts
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [HeaderComponent, UserComponent, TasksComponent],
+})
+export class AppModule {}
+```
+>[!NOTE]
+> `Imports` array is used for enabling standalone components.
+>
+> And ***also for including other modules***.
+<br/><br/>
+
+### BrowserModule
+* Module provided by Angular that provides collection of things that are needed by every Angular application in order to run correctly.
+
+>[!TIP]
+> You can also add `Modules` to `standalone components`.
+>
+> e.x.: `imports: [FormsModule]`.
+
+<br/><br/>
+
+### Shared modules
+* Break your application into multiple smaller modules and then combine them as needed.
+
+* `exports`: In this array, we define modules that are not only required internally by the current module, but also those that should be made available to any other module that imports this module.
+```ts
+@NgModule({
+  declarations: [CardComponent], // Declare components within the module
+  exports: [CardComponent], // Export components to make them available to other modules that import this shared module
+})
+export class SharedModule {}
+```
+* When a module imports another module, it will only have access to the components, directives, and pipes that are explicitly listed in the exports array of the imported module.
+
+* If a module needs something it must decalre or import it itself, it can't get it from any parent module that might be using this module.
+* `BrowserModule` is meant to be imported in root module, for other modules you can import `CommonModule`.
+<br/><br/>
+
+>[!IMPORTANT]
+> ### Public folder
+> There’s no need to prepend the public/ directory when referencing assets. For example, instead of using:
+>
+> <s>img src="public/image.png"</s>
+> 
+> `img src="image.png"`
+> 
+> Angular automatically serves files from the src/assets or public folder, so you don’t need to specify the folder name in the path.
+
+<br/><br/>
+
+>[!NOTE]
+>Value from form input will always be string.
+<br/><br/>
+
+>[!TIP]
+> ## asReadonly() function
+> To get ***read-only version*** of a `signal`.
+>
+> `results = this.investmentService.resultsData.asReadonly();`
+
+<br/><br/>
+
+# ***Source Maps*** for Debugging Logical Errors.
+* The ***Sources tab*** allows you to analyze your Angular (TypeScript) code at runtime.
+* You can add breakpoints.
+
+* Your TypeScript code doesn't run directly in the browser. Instead, the code you write is `compiled` by `Angular CLI`, and it's the `compiled JavaScript` that is executed in the browser.
+* `Source maps` are generated by `Angular CLI` during the build process. They allow the browser to map the executing code back to the original TypeScript source.
+* In the Sources tab of Developer Tools, you can view the original TypeScript code (via source maps).
+* To access this, go to Developer Tools > Sources.
+<br/><br/>
+
+
+# Splitting up components into smaller components
+* Promotes S.O.C: Seperation of concerns.
+* You can reuse that smaller component.
+
+* Each component should only perform signle task.
+<br/><br/>
+<br/><br/>
+
+# [***Component Selector***](https://angular.dev/guide/components/selectors)
+There are two types of component selectors in Angular:
+1. ***Element selector***.
+
+2. ***Attribute selector***.
+3. ***Class selector***.
+
+## 1. Element selector
+* An element selector ***defines a custom HTML element***, such as `<app-button>`, which Angular treats as a `component`.
+```ts
+@Component{
+  selector: 'app-button',
+}
+```
+```html
+<app-button>
+```
+<br/><br/>
+
+## 2. Attribute selector
+* An attribute selector ***is used to apply a component to an element*** that has a specific attribute.
+
+* When you add this attribute to an element, the component becomes active and would effectively replace it or take control of it.
+```ts
+@Component{
+  selector: '[appButton]',
+  // selector: 'button[appButton]',
+  // selector: 'button[appButton], a[appButton]',
+}
+```
+<br/><br/>
+
+>[!IMPORTANT]
+> We need to import our component in that component where we are using it.
+> 
+> Otherwise it will fail silently. 
+
+<br/><br/>
+
+## 3. Class selector
+```ts
+@Component{
+  selector: '.button',
+  //selector: 'button.button',
+}
+```
+<br/><br/>
+
+### Example of DOM Structure with Element Selector vs Attribute Selector
+1. Using Element Selector:
+   * Unnecessary wrapping over button element.
+```html
+<!-- HTML -->
+<app-button>...</app-button>
+
+<!-- DOM -->
+ <app-button>
+  <button>...</button>
+</app-button>
+```
+2. Using Attribute Selector:
+```html
+<!-- HTML -->
+<button appButton>...</button>
+
+
+<!-- DOM -->
+<button>...</button>
+```
+<br/><br/>
+
+<table border="1">
+  <tr>
+  <th>Syntax</th>
+    <th>selector: '[appButton]'</th>
+    <th>selector: 'button[appButton]'</th>
+    <th>selector: '.button'</th>
+    <th>selector: 'button.button'</th>
+  </tr>
+  <tr>
+    <th>Targets</th>
+    <td>This selector applies to any element that has the appButton attribute, regardless of its tag type. It doesn't matter whether the element is a &lt;button&gt;, &lt;div&gt;, &lt;input&gt;, or any other HTML element. As long as it has the appButton attribute, the component will control it.</td>
+    <td>This selector targets only &lt;button&gt; elements that also have the appButton attribute. It’s more specific than the previous one because it requires the element to be a &lt;button&lt; in addition to having the appButton attribute.</td>
+    <td>It applies to any element with the button class, regardless of the element type.</td>
+    <td>This selector targets only &lt;button&lt; elements that have the button class. It’s specific to the &lt;button&lt; tag and requires the element to have a particular class.</td>
+  </tr>
+  <tr>
+    <th>Example</th>
+    <td>
+      &lt;button appButton&gt;Click me!&lt;/button&gt;<br/>
+      &lt;input appButton value="Click me!" /&gt;<br/>
+      &lt;div appButton&gt;Some text&lt;/div&gt;
+    </td>
+    <td>
+      &lt;button appButton&gt;Click me!&lt;/button&gt;
+    </td>
+    <td> &lt;button class="button"&gt;Click me!&lt;/button&gt;<br/>
+      <br/>
+      &lt;div class="button"&gt;Click me!&lt;/div&gt;</td>
+    <td>
+      &lt;button class="button"&gt;Click me!&lt;/button&gt;
+    </td>
+  </tr>
+</table>
+
+<br/><br/>
+
+# Supporting Content Projection with Multiple Slots
+* In this scenario, the button component has a piece of content (the `Login` text) and an additional content element (the `→` arrow).
+
+* The idea is to use content projection to insert these pieces of content into different slots in the component’s template.
+
+### `select` attribute
+* The `select` attribute in the `<ng-content>` element in Angular allows for ***content projection with specific conditions***.
+* ***You can target specific elements from the parent template that match a CSS selector, and project them into specific slots inside the child component***.
+
+```html
+<button appButton>
+    Login
+  <span class="icon">→</span>
+</button>
+```
+```html
+<span>
+  <ng-content />
+</span>
+ <ng-content select=".icon"/>
+```
+<br/><br/>
+
+### `ngProjectAs`
+```html
+<button appButton>
+    Login
+  <span ngProjectAs="icon">→</span>
+</button>
+```
+```html
+<span>
+  <ng-content />
+</span>
+ <ng-content select=".icon"/>
+```
+<br/><br/>
+
+### Defining Fallbacks if Content Projection failed
+* The content inside the `<ng-content>` tag can serve as a `fallback` if no matching content is found based on the specified `select` attribute.
+```html
+<ng-content select="icon">»</ng-content>
+```
+
+
+
+
+<br/><br/>
+# What is a <span style=color:Green>***Directive***</span> in Angular?
 * To add extra functionality to elements.
 * Similar to Components(component have templates(html) but directives dont).
 * Components are directives with template.
