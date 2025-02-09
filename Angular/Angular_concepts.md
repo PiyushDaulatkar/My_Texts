@@ -295,7 +295,9 @@ const x = signal(initialValue); // Optional initial value
 * Changing signal values:
 ```ts
 x.set(newValue);               // Directly sets a new value
+
 x.update(value => value + 1); // Updates based on the current value
+// in update callback, current value of signal is available.
 ```
 * To read a signal's value, call it like a function:
 ```ts
@@ -450,7 +452,7 @@ onSelectUser(id: string) {
 * The parent listens to the child component's event in its template using `(eventName)="handler($event)"`.
 
 * ***The `$event` variable contains the value emitted by the child***.
-* `$event` is availabe with both custom events(select) and built-in DOM events(click).
+* `$event` is available with both custom events(select) and built-in DOM events(click).
 <br/><br/>
 
 # output function
@@ -520,6 +522,21 @@ onSelectUser() {
 
   * This is especially helpful when the list changes dynamically (e.g., adding, removing, or reordering items).
   * Without `track`, updating the list causes Angular to re-render all items in the list. However, with `track`, only the new or changed items are rendered, improving performance.
+
+>[!TIP]
+> To display something as fallback if the array in for loop is empty, can be done by `@empty`.
+> ```html
+> <ul>
+>    @for (ticket of tickets; track ticket.id) {
+>    <li>
+>      <app-ticket />
+>    </li>
+>    } @empty {
+>      <p>No tickets available.</p>
+>    }
+>  </ul>
+> ```
+
 <br/><br/>
 
 ### 2. *ngFor (structural directive)
@@ -987,11 +1004,726 @@ There are two types of component selectors in Angular:
 ```html
 <ng-content select="icon">»</ng-content>
 ```
+<br/><br/>
+
+# View encapsulation
+* Add ***encapsulation setting*** in `@Component` decorator.
+```ts
+import { ViewEncapsulation } from '@angular/core';
+
+@Component({
+  encapsulation: ViewEncapsulation.None,
+})
+```
+* `encapsulation` takes value of type `ViewEncapsulation` enum.
+```ts
+enum ViewEncapsulation {
+  Emulated = 0, // Angular emulates(copies) ShadowDom behavior.
+  None = 2, // Diables styles encapsulation.
+  ShadowDom = 3, // Here Angular uses original browser ShadowDOM feature.
+}
+```
+* The Shadow DOM allows CSS styles to be scoped to a hidden DOM tree, ensuring styles apply only within that component and not globally.
+
+* Angular can emulate(copy) this shadow DOM browser feature for its own components.
+<br/><br/>
+
+# Host elements
+* Every angular component has a ***Host element***.
+
+* For example, a component with the selector `app-header` targets the `<app-header>` element, which is rendered in the actual DOM.
+* Like from template URL, take HTML and put it into the specifed selector.
+```ts
+@Component{
+templateUrl: './abc.component.html', // Take html from here.
+styleUrl: './abc.component.css' // Take css from here.
+
+
+// Put html & css from above into below selector.
+
+selector: 'app-abc',
+// i.e put it inside <app-abc></app-abc>
+}
+```
+* Now the css in `./abc.component.css` is applied to `./abc.component.html` but ***not to other elements*** in `<app-abc></app-abc>`.
+* To apply styles to them use `:host` in `./abc.component.css`.
+>[!IMPORTANT]
+> The element targeted by your component's selector is not replaced when the page is rendered. It’s not a placeholder.
+> 
+> Instead, the selected elements are preserved and simply "***enhanced***"/"taken over" by your component logic & markup!
+* The ***host element*** is ***not part of the component's template***, but it will still be affected by scoped styles through the `:host` selector.
+>[!NOTE]
+> `:host` behavior is a CSS feature, not an Angular-specific feature.
+### Example of ***Styling the Host Element***
+```html
+<!-- earlier -->
+ <!-- button {
+  display: inline-block;
+  padding: 0.65rem 1.35rem;
+  border-radius: 0.25rem;
+}
+
+button:hover {
+  background-color: #551b98;
+} -->
+<!-- after -->
+:host {
+  display: inline-block;
+  padding: 0.65rem 1.35rem;
+  border-radius: 0.25rem;
+}
+
+:host:hover {
+  background-color: #551b98;
+}
+```
+# Usecase
+* Let's say we want to create a custom button component in Angular.
+```ts
+// buttonComponent.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'button[appButton]', // This targets <button appButton></button>
+  standalone: true,
+  templateUrl: './button.component.html',
+  styleUrl: './button.component.css'
+})
+export class ButtonComponent {
+}
+```
+```html
+<!-- button.component.html -->
+<span>
+  <ng-content />
+</span>
+ <ng-content select="icon">»</ng-content>
+```
+```css
+/* button.component.css */
+button {
+  display: inline-block;
+  padding: 0.65rem 1.35rem;
+  border-radius: 0.25rem;
+}
+
+button:hover {
+  background-color: #551b98;
+}
+```
+#### Now we can use our custom button component in the app:
+* 
+```html
+<!-- html where custom buttom component is used. -->
+<button appButton>
+  Submit
+  <span ngProjectAs="icon">»</span>
+</button>
+```
+#### The Issue with Styles
+* We added styles to the `<button>` element inside the component, but in the `button.component.html`, we don't actually have a `<button>` tag. Instead, the host element is the `<button>` tag itself, and the styles won't be applied directly to it.
+
+### Solution: Use `:host` to Style the Host Element
+* To apply styles to the host element (the `<button>` in this case), we can use the `:host` selector in the component's CSS:
+```css
+/* button.component.css */
+:host {
+  display: inline-block;
+  padding: 0.65rem 1.35rem;
+  border-radius: 0.25rem;
+}
+
+:host:hover {
+  background-color: #551b98;
+}
+```
+* Now the styles will correctly apply to the `<button>` tag used in the template!
+<br/><br/>
+
+## Interacting With Host Elements From Inside Components
+### Method 1
+* `host` setting in `@Component` decorator.
+
+* It takes key-value pairs as properties on your host element.
+```ts
+@Component({
+  selector: 'app-abc',
+  host: {
+    class: 'control',
+  },
+})
+```
+* This will add class attribute to `app-abc` wherever its being used.
+<br/><br/>
+
+### Method 2 (old approach, not prefered)
+* You can add a property to your component class and set the value you want to bind on your host element and decorate it with the `@HostBinding()` decorator.
+```ts
+export class ControlComponent {
+  // @HostBinding() className = 'control';
+  @HostBinding('class') className = 'control';
+}
+```
+<br/><br/>
+
+## To listen to an event on host element
+  * To bind a method to an event to which you wanna listen here.
+  * Usecase: (ex: when host element is clicked).
+#### Way 1: using `host` setting in `@Component` decorator.
+```ts
+@Component({
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '(click)': 'onClick()'
+  },
+})
+export class ControlComponent {
+
+  onClick() {
+    console.log('clicked');
+  }
+}
+```
+<br/><br/>
+
+#### Way 2: ***@HostListener()*** decorator
+```ts
+@Component({
+})
+export class ControlComponent {
+
+// pass event name to decorator as argument.
+  @HostListener('click') onClick() {
+    console.log('clicked');
+  }
+}
+```
+<br/><br/>
+
+# Interacting with Host Elements Programmatically
+
+* The special class name is `ElementRef`.
+
+* `ElementRef` is a class provided by Angular that allows you to reference an element rendered on the page.
+* It can reference any element on the page.
+* By ***injecting `ElementRef` into a component***, Angular provides ***access to the host element of that component***.
+
+```typescript
+import { Component, ElementRef, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-example',
+  template: `<div>Hello, Angular!</div>`,
+  styles: [`
+    div {
+      color: blue;
+      font-size: 20px;
+    }
+  `]
+})
+export class ExampleComponent implements OnInit {
+
+  constructor(private elementRef: ElementRef) {}
+
+  ngOnInit() {
+    // Accessing the host element
+    const hostElement = this.elementRef.nativeElement;
+    // Changing the background color of the host element
+    hostElement.style.backgroundColor = 'yellow';
+    console.log(hostElement);
+  }
+}
+```
+<br/><br/>
+
+# Advanced class binding
+* Syntax to dynamically control ***multiple css classes*** simultaneously.
+
+* Set class value to object that contain multiple key-value pairs where every key represents one css class and its value should be boolean.
+```html
+<div [class]="{
+  status: true,
+  'status-online': currentStatus === 'online',
+  'status-offline': currentStatus === 'offline',
+  'status-unknown': currentStatus === 'unknown',
+}">
+test.
+</div>
+```
+
+>[!NOTE]
+> In JS and TS.
+> 
+> You can not add properties that includes dashes(-) or white spaces( ) to a an object. e.x object = { (e.g., my-class: 'abc' )}
+>
+> If you want to use them in object use then in single quotes e.x object = { (e.g., 'my-class': 'abc' )}.
+
+<br/><br/>
+
+# Binding CSS styles dynamically.
+* Dynamic Inline Style Binding.
+
+* Use `style` keyword property.
+```html
+<div
+[style.fontSize]="'64px'"
+>
+</div>
+```
+* Multiple styles
+```html
+<div
+  [style]="{
+    'font-size': '64px',
+    'backgroundColor': 'lightblue',
+  }"
+>
+</div>
+```
+
+>[!TIP]
+> You can use camelCase synatax also like ***'fontSize':'64px'***, to aviod dashes(-) and white spaces( ), or using quotes.
+
+<br/><br/>
+
+# Component Lifecycle: 
+* All components in Angular goes through `component life cycle`.
+
+* When Angular instantiates and renders a component and when it checks it for changes in future, certain life cycle hooks are triggered by Angular.
+
+>[!NOTE]
+> There can be a typo in method names like (ngoninit), then Angular will not consider it as Component Lifecycle method.
+>
+> Solution: Implement `Interfaces` provide by Angular like `OnInit`, which will force to implement proper method.
+>
+> With implementing interface, Component Lifecycle methods will work proper but there should be no typo in method name.
+
+<br/><br/>
+
+### Execution order of Angular's lifecycle hooks.
+![Execution order](../Assests/abcde.png)
+<br/><br/>
+
+![Subsequent updates](../Assests/abcdef.png)
+
+
+<br/><br/>
+
+# `ngOnInit`
+* Runs once after Angular has initialized all the component's inputs.
+
+* In Angular it is recommended to use `ngOnInit` instead of `constructor`.
+
+>[!TIP]
+> Keep `constructor` lean and only do basic class initalization in `constructor` (like setting initial class property values).
+>
+> Use `ngOnInit` for more complex tasks and initalization work.
+>
+> Like sending HTTP requests.
+
+>[!IMPORTANT]
+> If your component receives any `input` values, those values will be initialized and will be available in `ngOnInit`.
+>
+> Whereas not in `constructor`.
+
+<br/><br/>
+
+# `ngDoCheck`
+* It is related to Angular ***change detection mechanism***.
+* It is invoked whenever Angular thinks that a UI update might be needed.
+
+* So whenever Angular detects anything anywhere ***on the entire application*** (not just in component but entire application), then this hook gets invoked.
+* ***Hence this hook is invoked a lot, so its discouraged to use, as any code inside it will run a lot***.
+<br/><br/>
+
+## Difference betweem `view` & `content`.
+<table border="1">
+  <tr>
+    <th>Syntax</th>
+    <th>VIEW</th>
+    <th>CONTENT</th>
+  </tr>
+  <tr>
+    <th></th>
+    <td>`View` of an Angular component is its template (HTML).</td>
+    <td>Any content that might be projected into view with `ngContent`.</td>
+  </tr>
+  <tr>
+    <th>Technically</th>
+    <td>`View` is an internally managed data structure that holds reference to the DOM elements rendered by a component.</td>
+    <td>`Content` is some other (partial) View data structure projected into this component's View.</td>
+  </tr>
+</table>
+<br/><br/>
+
+# `ngAfterContentInit`
+* Executed after any projected content is initialized.
+<br/><br/>
+
+# `ngAfterContentChecked`
+* Executed whenever the content has been checked by Angular's change detection mechanism.
+<br/><br/>
+
+# `ngAfterViewInit`
+* Executed after any projected content is initialized + all other elements in the template (i.e view) is initialized.
+<br/><br/>
+
+# `ngAfterViewChecked`
+* Executed whenever the content + view(template) of this component has been checked by Angular's change detection mechanism.
+<br/><br/>
+
+# `ngOnDestroy`
+* To do cleanup work right before the component is gone.
+<br/><br/>
+
+# `DestroyRef`
+* Modern alternative of `ngOnDestroy`.
+* Works Angular v16+.
+
+* In Angular, you can now use a ***special service*** called `DestroyRef`, which allows you to handle cleanup operations when a component is about to be destroyed.
+  1. You inject DestroyRef into your component (either through the constructor or directly).
+
+  2. By injecting `DestroyRef` and storing it in a property, you can setup a listener with help of this property.
+  3. The inject value will trigger a function whenever the function into which you injected DestroyRef is about to be destroyed.
+```ts
+// also you can inject in constructor.
+private destroyRef = inject(DestroyRef);
+
+method() {
+    const interval = setInterval(() => {
+     // some logic
+    }, 5000);
+
+    // In this.destroyRef.onDestroy() we register a function that will be executed by angular when this component is about to be destroyed.
+    this.destroyRef.onDestroy(() => {
+      clearInterval(interval)
+    })
+  }
+```
+<br/><br/>
+
+# Template Variable
+* (Alternative of `ngModel` but, here instead of storing a literal value, you can ***store reference to a whole element*** from template, in a so-called ***template variable***.)
+* Angular feature.
+### Steps to Use Template Variables:
+1. ***Add a special attribute*** to the element where you want to store a reference. This attribute ***starts with a hash (#)*** to create a template variable.
+```html
+    <input name="title" id="title" #titleInput />
+```
+* In the above example, titleInput is a template variable that stores the reference to the `<input>` element.
+2. ***Access the template variable*** in the rest of the template without the hash symbol.
+```html
+<!-- onSubmit(titleInput) -->
+<form (ngSubmit)="onSubmit(titleInput)">
+  <app-control label="Title">
+    <input name="title" id="title" #titleInput />
+  </app-control>
+</form>
+```
+<br/>
+
+>[!TIP]
+> You can see `type` of the template variable, by hovering over it html template file.
+
+>[!NOTE]
+> Unlike `ngModel`, the template variable doesn't update its value on every keystroke. It's more efficient.
+* Instead of passing whole reference of element you can also pass specific feilds from it.
+```html
+<!-- titleInput.value. -->
+<form (ngSubmit)="onSubmit(titleInput.value)">
+  <app-control label="Title">
+    <input name="title" id="title" #titleInput />
+  </app-control>
+</form>
+```
+* In this example, you are only passing the value of titleInput instead of the entire reference.
+
+<br/>
+
+### Template Variables & Component Instances
+>[!IMPORTANT]
+> When you try to assign ***a reference of Angular component*** to `template variable` it does not give access to DOM element, but instead gives access to ***instance of that component***.
+> ```html
+> <!-- .html file. -->
+> <app-control label="Request" #angularComponent>
+>  </app-control>
+>
+>  <example (click)="onClick(angularComponent.contolMethod())">
+> <!--<example (click)="onClick(angularComponent.variable)"> -->
+> ```
+> ```ts
+> // .ts file.
+> export class ControlComponent {
+> variable: string;
+> contolMethod() {
+>     console.log('clicked');
+>   }
+> } 
+>```
+
+<br/><br/>
+
+# Accessing `Template Variable` directly in component.ts file.
+# `ViewChild()` decorator
+* The `@ViewChild()` decorator in Angular is used to get a ***reference*** to any child element, directive, or component inside a template.
+* By doing this, you can interact with these elements or components directly in the component class.
+### Steps to use @ViewChild():
+* ***Passing a selector***: You pass a selector to the `@ViewChild()` decorator. This can be:
+   1. The class of a component (if you want to access a component).
+```ts
+@ViewChild(ControlComponent) cComp?: ControlComponent;
+
+cComp.anyMethodOrVarFromControlComponent;
+```
+
+   2. A template reference variable (a string that identifies an element in your template).
+```HTML
+<form #form>
+  <!-- form content here -->
+</form>
+```
+```ts
+@ViewChild('form') form?: ElementRef<HTMLFormElement>;
+
+
+
+// use nativeElement here because we store element inside ElementRef wrapper object.
+ngAfterViewInit() {
+  this.form?.nativeElement.reset(); // Access and reset the form
+}
+```
+   3. A directive class name (to access an instance of the directive applied to an element).
+* ***Using the reference***: After the component or element is captured by @ViewChild(), you can access its properties and methods.
+
+<br/>
+
+>[!TIP]
+> ### Using `ngAfterViewInit` for Safe Access.
+> Since `ViewChild` works ***after the view has been initialized***, you generally want to access your `ViewChild` `references` in the `ngAfterViewInit()` ***lifecycle hook***, which guarantees that the DOM has been rendered and the child elements are accessible.
+
+<br/><br/>
+
+# `ViewChildren()`
+* To select ***multiple*** elements or components within a view.
+
+* It ***returns an Array*** (or QueryList) of references.
+```html
+<form #form1>
+  <input type="text" />
+  <button>Submit</button>
+</form>
+
+<form #form2>
+  <input type="text" />
+  <button>Submit</button>
+</form>
+```
+```ts
+  @ViewChildren('form1, form2') forms?: QueryList<ElementRef<HTMLFormElement>>;
+
+  ngAfterViewInit() {
+    // Iterate over the forms
+    this.forms?.forEach(form => {
+      form.nativeElement.reset(); // Reset each form
+    });
+
+
+// Using @ViewChildren with Components.
+  @ViewChildren(ChildComponent) children?: QueryList<ChildComponent>;
+```
+
+<br/><br/>
+
+# `viewChild()` function
+* From Angular 17.3+.
+* It will return `signal`.
+* Also you can use `viewChildren()` function to get multiple references from view(template).
+```ts
+// 1. For component
+  private cComp = viewChild(ControlComponent);
+
+// 2. For element in view(template)
+// pass Template Variable.
+  private form = viewChild('form');
+```
+<br/><br/>
+
+>[!IMPORTANT]
+> ***When you use `ngContent` to project content into template, then the projected content is not actually the part to template(view).***
+> * Hence you ***cannot get*** reference of projected content with `ViewChild`.
+> 
+> * You can get it with ***`ContentChild`***.
+
+# `ContentChild` & `ContentChildren` decorators
+* You can use `contentChild()` & `contentChildren()` function to get signal.
+
+>[!TIP]
+> ### Using `ngAfterContentInit` for Safe Access.
+> Since `ContentChild` works ***after the content has been initialized***, you generally want to access your `ContentChild` `references` in the `ngAfterContentInit()` ***lifecycle hook***, which guarantees that the DOM has been rendered and projected content is accessible.
+
+<br/><br/>
+
+# `afterRender` & `afterNextRender` lifecycle hooks.
+* Angular 16+.
+* You need to ***register them with the help of constructor*** (and not as methods in class).
+```ts
+constructor() {
+    afterRender(() => {
+      console.log('afterRender');
+    });
+
+    afterNextRender(() => {
+      console.log('afterNextRender');
+    });
+  }
+``` 
+### `afterRender`
+* It allow to define function to execute, whenever anything in entire application changes.
+* After every change detection cycle that follows.
+
+### `afterNextRender`
+* Once after the next change detection cycle.
+
+<br/><br/>
+
+>[!NOTE]
+>`afterRender` & `afterNextRender` lifecycle hooks refers to entire Angular application.
+>
+> Whereas other lifecycle hooks refers only to a specific component.
+
+<br/><br/>
+
+# `effect()` function
+* Lifecycle hook cum signal feature.
+* Allows to run code when signal values change.
+* It takes function as an argument.
+* You can use this function to set subscription to signals where Angular does not sets subscription.
+* The ***function passed into*** `effect()` will be executed automatically whenever the `signal` values used inside that function change.
+* When the component that is using the `effect()` is removed from the DOM, Angular automatically cleans up any subscriptions related to that `effect()`. This avoids memory leaks, making it easier to manage signals in Angular.
+```ts
+effect(() => {
+      console.log('this.currentStatus() :>> ', this.currentStatus());
+})
+```
+
+<br/>
+
+## Signal Effects Cleanup Functions
+* When working with Signal effects, you sometimes might need to perform some cleanup work before the effect function runs again (e.g., to clear some timer or something like that).
+
+* Angular's `effect()` allows you to do that!
+
+* It does provide you with an onCleanup hook which you can execute as part of your effect function to define what should happen before the effect code runs the next time:
+```ts
+effect((onCleanup) => {
+  const tasks = getTasks();
+  const timer = setTimeout(() => {
+    console.log(`Current number of tasks: ${tasks().length}`);
+  }, 1000);
+  onCleanup(() => {
+    clearTimeout(timer);
+  });
+});
+```
+
+<br/><br/>
+
+# `@for` deep dive
+* Angular give some special variables that you use within ***@for*** loop.
+* e.g.: first, last, even, odd.
+* count
+```html
+<ul>
+    @for (ticket of tickets; track ticket.id) {
+    <li><app-ticket /> = {{ $first }}</li>
+    } @empty {
+    <p>No tickets available.</p>
+    }
+</ul>
+```
+
+<br/><br/>
+
+# Configuring Component Inputs & Outputs, decorator and signals.
+* alias (i.e., use with different name).
+
+* transform. 
+  * Transform the data passed via inputs or outputs (e.g., format or modify data before using it).
+  * Like changing dataType.
+
+* required.
+```ts
+@Input({ configuration })
+
+data = input.required<Ticket>({ configuration });
+```
+
+<br/><br/>
+
+# Custom two-way data binding
+* In Angular, custom two-way data binding can be implemented by using a combination of the @Input() and @Output() decorators.
+
+* Angular requires that custom `@Output()` event names for two-way binding follow a specific naming convention: the `@Output()` event should have the name of the` @Input()` property with the Change suffix.
+```ts
+// RectComponent.ts
+export class RectComponent {
+  // Todo: Implement custom two-way binding
+  @Input({ required: true }) size!: { width: string; height: string };
+  @Output() sizeChange = new EventEmitter<{ width: string; height: string }>();
+
+  onReset() {
+    this.sizeChange.emit({
+      width: '200',
+      height: '100',
+    });
+  }
+}
+```
+```html
+<!-- RectComponent.html -->
+<div
+  id="rect"
+  [style.width]="size.width + 'px'"
+  [style.height]="size.height + 'px'"
+  (click)="onReset()"
+></div>
+```
+```html
+<!-- AppComponent.html -->
+<app-rect [(size)]="rectSize" />
+```
+```ts
+// AppComponent.ts
+export class AppComponent {
+  rectSize = {
+    width: '100',
+    height: '100',
+  };
+}
+```
+
+<br/><br/>
+
+# model() function for two-way data binding
+* Easier syntax.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 <br/><br/>
+
 # What is a <span style=color:Green>***Directive***</span> in Angular?
 * To add extra functionality to elements.
 * Similar to Components(component have templates(html) but directives dont).
