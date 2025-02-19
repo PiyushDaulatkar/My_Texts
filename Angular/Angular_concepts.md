@@ -725,6 +725,9 @@ export class NewTaskComponent {
   private taskService = inject(TasksService);
 }
 ```
+>[!TIP]
+> * Value provided in `inject()` function is called as ***injection token***.
+
 <br/><br/>
 
 # What is Angular `modules`?
@@ -1663,7 +1666,7 @@ data = input.required<Ticket>({ configuration });
 # Custom two-way data binding
 * In Angular, custom two-way data binding can be implemented by using a combination of the @Input() and @Output() decorators.
 
-* Angular requires that custom `@Output()` event names for two-way binding follow a specific naming convention: the `@Output()` event should have the name of the` @Input()` property with the Change suffix.
+* Angular requires that custom `@Output()` event names for two-way binding follow a specific naming convention: the `@Output()` event should have the name of the` @Input()` property with the ***Change*** suffix.
 ```ts
 // RectComponent.ts
 export class RectComponent {
@@ -1702,32 +1705,35 @@ export class AppComponent {
 }
 ```
 
+> [!NOTE]
+> `ngModel` directive inside uses Input() and Output().
+
 <br/><br/>
 
 # model() function for two-way data binding
 * Easier syntax.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <br/><br/>
 
+# Angular Directives
+
+* Directives vs Components
+* Attribute Directives
+* Structural Directives
+* Built-in Directives
+* Building custom Directives.
+
 # What is a <span style=color:Green>***Directive***</span> in Angular?
-* To add extra functionality to elements.
-* Similar to Components(component have templates(html) but directives dont).
-* Components are directives with template.
+* Directives are ***"enhancements"*** for elements (built-in ones or components).
+* To add extra functionality(extra behavior or settings) to elements.
+```html
+<!-- ngModel can be used to enhance input element. -->
+ <input name="title" ngModel />
+```
+> [!NOTE]
+> * Similar to Components(but component have templates(html) but directives dont).
+> * Components are directives with a template.
+
 * In Angular, a ***directive*** is a <span style=color:red>***class***</span> that allows you to <span style=color:gold>***manipulate the DOM (Document Object Model) or change the behavior of elements***</span> in the user interface (UI).
 
 * The directive class uses a special decorator, <span style=color:Pink>***@Directive***</span>, to tell Angular that it’s a directive.
@@ -1737,7 +1743,7 @@ There are three main types of directives in Angular:
 
 1. Structural Directives (like *ngIf, *ngFor)
 2. Attribute Directives (like ngClass, ngStyle)
-3. Component Directives (which are also a special kind of directive)
+3. Custom Directives.
 
 ### 1. ***Structural*** Directives
 * These directives <span style=color:gold>***change the***</span> <span style=color:red>***structure***</span> <span style=color:gold>***of the DOM***</span>.
@@ -1745,6 +1751,7 @@ There are three main types of directives in Angular:
 * They can add or remove elements from the DOM based on certain conditions.
 
 * Example: *ngIf, *ngFor
+
 ```html
 <div *ngIf="isVisible">This content is visible when 'isVisible' is true.</div>
 ```
@@ -1764,10 +1771,52 @@ There are three main types of directives in Angular:
 ```
 <hr><br>
 
-### 3. Component Directives
-* Technically, components in Angular are also a type of directive. Components are the most common kind of directive you'll work with. They include both the structure (HTML) and behavior (logic) for a part of your app.
+### 3. Custom Directives
 
-* Example: <app-header>, <app-footer>
+>[!IMPORTANT]
+> * Custom directive can also be added as tag selector.
+> ```ts
+> import { Directive } from "@angular/core";
+>
+> @Directive({
+>  selector: 'app-safe-link' // >> like component selector.
+>
+>  // selector: '[appSafeLink]' >> To add this directive as attribute.
+>
+> // selector: 'a[appSafeLink]' >> To add this to <a> tag with [appSafeLink] attribute. 
+> })
+> export class SafeLinkDirective{}
+>```
+
+```ts
+import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[appSafeLink]',
+  standalone: true,
+  host: {
+    '(click)': 'onConfirmLeave($event)',
+  },
+})
+export class SafeLinkDirective {
+  constructor() {
+    console.log('SafeLinkDirective is active!');
+  }
+
+  onConfirmLeave(event: MouseEvent) {
+    const wantsToLeave = window.confirm('Do you want to leave the app?');
+
+    if (wantsToLeave) {
+      return;
+    }
+
+    event.preventDefault();
+  }
+}
+```
+
+>[!WARNING]
+> For building Directive for `NgModule` based Angular application, set standalone to 'false' and add the directive to the "declarations" array of an `NgModule`.
 <hr><br>
 
 ### You can create your custom directive to manipulate DOM as per your requirement.
@@ -1782,29 +1831,419 @@ There are three main types of directives in Angular:
   * Material Design Elements:
 <hr><br><br>
 
-# What is <span style=color:Pink>***providers***</span> in Angular?
+# `ng-template`
+* `ng-template` is a special element(tag) provided by Angular.
+* You can use it in your component templates to wrap some content which should not be shown on screen initially.
+* To show something eventually on screen.
 
-<hr><br><br>
+>[!NOTE]
+> 1. `<p *ngIF="">Hello world</p>`
+>
+> Above code asteric(*) is internally converted to as below:
+> 
+> 2. `<ng-template ngIF="">`
+>     
+>     `<p>Hello world</p>`
+> 
+>    `</ng-template>`
+>
+> i.e. if you want to use structural directive without asteric(*), you need warp your code in `ng-template` and add structural directive to it.
 
-# What is <span style=color:Pink>***change detection***</span> in Angular?
+<br/>
 
-* In Angular, change detection is the mechanism by which Angular <span style=color:gold>***determines when to update the view***</span> in response to ***changes in the application state*** (e.g., changes to component properties, events, or external data).
-* The ChangeDetectionStrategy determines how Angular ***checks for these changes*** and updates the view accordingly.
+>[!IMPORTANT]
+> * Structural Directives has ***asteric ( * )*** at the start.
+> 1. ***asteric ( * )*** tells Angular that this Directive will modify structure of the DOM.
+>
+> 2. It also will automatically setup property binding. Hence if you hardcoded value pass it in single quotes.
+> *structuralDirective="'hardcoded'"
+> *structuralDirective="dynamic"
 
-* By default, Angular uses the `ChangeDetectionStrategy.Default` strategy, which checks the entire component tree for changes every time an event is triggered (such as a click or user input).
+<br/><br/>
 
-2. `ChangeDetectionStrategy.OnPush`
-   * The OnPush change detection strategy is a performance optimization technique that tells Angular to only check for changes ***when certain conditions are met***.
-   * When is it checked?
-     * When one of its ***@Input() properties changes***.
-     * When an ***event is triggered*** from the component (such as an emitted event).
-     * If ***markForCheck()*** is called.
+### Custom structural directive
+* Need to inject:
+  1. `TemplateRef`: reference to template on which directive was added.
+  2. `ViewContainerRef`: reference to DOM where above template is being used.
 
+* `TemplateRef`: Gives access to the content of template.
+* `ViewContainerRef`: Gives access to the place in DOM where this directive is being used.
+
+<br/><br/>
+
+# `hostDirectives`
 ```ts
-//syntax
-import { ChangeDetectionStrategy } from '@angular/core';
-
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-auth',
+  standalone: true,
+  hostDirectives: [LogDirective],
 })
 ```
+* The directives inside `hostDirectives` array will get applied to this component automatically.
+* No need to add it on selector tag in html, each time where this component is used.
+
+* You can also add `hostDirectives` array in other directives as well.
+* Hence you can merge behaviour of two directives together, so you can build components or directives as layers of other directives if needed.
+
+<br/><br/>
+
+# Pipes Deep Dive
+
+* What are pipes?
+* Built-in pipes.
+* Building customes pipes.
+* Pure vs impure pipes.
+
+<br/><br/>
+
+## What are pipes?
+* Pipes transform the way data is displayed.
+* To format values when they are displayed on template.
+
+<br/><br/>
+
+## Building customes pipes
+* Add `@Pipe` decorator on class.
+
+* Add `transform()` method.
+  * This method will get automatically executed by Angular when you use this custom pipe.
+
+  * `transform(value: any, ...args: any[])`
+  * `value`: The value on which the pipe is used.
+  * `...args`: The configuration values passed to the pipe.
+  * Implement `PipeTransform` to avoid typos.
+  * It must `return` the transformed value.
+```ts
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'temp',
+  standalone: true,
+})
+export class TemperaturePipe implements PipeTransform {
+  transform(value: any, ...args: any[]) {
+    return value + ' - transformed';
+  }
+}
+```
+
+#### You can also chain multiple pipes.
+```html
+{{ currentTemperaturs.newYork | number : "1.1-2" | temp : "cel" : "fah" }}
+```
+
+* You can use pipes anywhere in template like on for loop conditions also.
+
+<br/><br/>
+
+<table style="border: 1px solid;">
+  <thead>
+    <tr>
+      <th style="border: 1px solid; padding: 8px; text-align: left;">Feature</th>
+      <th style="border: 1px solid; padding: 8px; text-align: left;">Pure Pipe</th>
+      <th style="border: 1px solid; padding: 8px; text-align: left;">Impure Pipe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border: 1px solid black; padding: 8px;">Re-evaluation Trigger</td>
+      <td style="border: 1px solid black; padding: 8px;">Re-evaluates only when the <strong>input reference changes</strong>.</td>
+      <td style="border: 1px solid black; padding: 8px;">Re-evaluates <strong>on every change detection cycle</strong>, regardless of input reference change.</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; padding: 8px;">Performance</td>
+      <td style="border: 1px solid black; padding: 8px;">More performant, since it only runs when necessary (input changes).</td>
+      <td style="border: 1px solid black; padding: 8px;">Less performant, as it runs on every change detection cycle, even if the input doesn't change.</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; padding: 8px;">Change Detection</td>
+      <td style="border: 1px solid black; padding: 8px;">Only triggered by <strong>explicit changes</strong> in the input reference (like a new array).</td>
+      <td style="border: 1px solid black; padding: 8px;">Triggered on every change detection cycle, regardless of the actual data change.</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; padding: 8px;">Angular Default</td>
+      <td style="border: 1px solid black; padding: 8px;">Yes (Angular pipes are <strong>pure</strong> by default).</td>
+      <td style="border: 1px solid black; padding: 8px;">No, you must explicitly set <code>pure: false</code> when defining the pipe.</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<br/><br/>
+
+# Services & Dependency Injection deep dive
+* Hierarchical Injectors & DI Resolution Process.
+* Injection Tokens & Values.
+
+<br/><br/>
+
+## Services
+* Services allow you to share logic & data across the application.
+
+## Different types of `injectors` in Angular:
+1. `NullInjector` (fallback injector)
+2. `Platform EnvironmentInjector` (to provide dependency to multiple application (can be added in main.ts)).
+* 3. `Application root EnvironmentInjector`
+
+* 3. `ModuleInjector` (if working with `NgModules`)
+4. `ElementInjector`.
+
+* For a dependency a component first goes to `ElementInjector` and then if not found up the heirarchy till `NullInjector`.
+
+![Execution order](../Assests/DI.png)
+
+<br/>
+
+##### To make Angular aware of injectable "things" (e.g. services) we must ***register*** these "things" with one of its `injectors`.
+
+<br/>
+
+#### 1. Registering injectable value with `Application root EnvironmentInjector`
+```ts
+@Injectable({
+  // registers an injectable thing with the "Application root EnvironmentInjector"
+  providedIn: 'root',
+})
+```
+or
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+
+import { AppComponent } from './app/app.component';
+import { TasksService } from './app/tasks/task.service';
+
+bootstrapApplication(AppComponent,{ providers: [TasksService]}).catch((err) => console.error(err));
+```
+* This second approach is less optimized as it will add the dependency each time even if not required.
+<br/><br/>
+
+#### 2. Registering injectable value with `ElementInjector`
+* Special kind of injector, that's closely tied to your DOM elements.
+
+>[!IMPORTANT]
+> `ElementInjector` is not suitable for injecting one service into another service.
+> 
+> As it's closely tied to your DOM elements.
+>
+> Additionally, when you inject one service into another, the Dependency Injection (DI) doesn't first check into the `ElementInjector`. Instead, it bypasses it and looks into the `EnvironmentInjector` or `Module injector`.
+
+```ts
+import { TasksService } from './task.service';
+
+@Component({
+  selector: 'app-tasks',
+  standalone: true,
+  templateUrl: './tasks.component.html',
+  providers: [TasksService]
+})
+export class TasksComponent {}
+```
+* `providers: []` array here allows you to set up values that should be injectable, that are tied to the `ElementInjector` ***that belongs to this component***.
+
+>[!NOTE]
+> 1. So, all child components, i.e. components and elements used in the template of this component will ***also have access to that element injector***.
+> 
+> 2. All child components, i.e. components and elements used in the template of this component will get ***seperate instance of the dependency***.
+>
+> 2nd point is important. If you update a dependency in one service, it will not be reflected in the other components where the dependency is injected.
+
+<br/><br/>
+
+# Longcut of providing DI token
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { TasksService } from './app/tasks/task.service';
+import { InjectionToken } from '@angular/core';
+
+// * Longcut of custom injection token of providing your service to the application. *
+
+export const TasksServiceToken = new InjectionToken<TasksService>('tasks-service-token');
+
+bootstrapApplication(AppComponent, {
+  providers: [{provide: TasksServiceToken, useClass:TasksService}]
+}).catch((err) => console.error(err));
+```
+
+#### useClass:
+* Specifies a class to be instantiated when the dependency is injected.
+#### useExisting:
+* Allows you to alias an existing provider to another, reusing the same instance.
+#### useValue:
+* Provides a static value as the dependency, instead of creating a new instance.
+#### useFactory:
+* Takes a function, which is executed in case you had some values that needs to be generated dynamically.
+<br/>
+
+#### Accessing it:
+##### 1. through inject() function:
+```ts
+private tasksService = inject(TasksServiceToken);
+```
+##### 1. through constructor:
+```ts
+// use @Inject() decorator.
+constructor(@Inject(TasksServiceToken) private taskService: TasksService) {}
+```
+
+<br/><br/>
+
+# Angulars Change Detection Mechanism
+
+* What is Change Detection?
+* Understanding Angulars Change Detection Mechanism.
+* Using the OnPush Strategy.
+* Change Detection & Signals.
+* Going zoneless.
+
+>[!TIP]
+> 1. Avoid calling function with heavy logic in tring interpolation in template binding.
+>
+> 2. If you are using getters, do no perform any heavy operations in it.
+>
+> 3. Tell Angular, if certain event does not matter for change detection.
+
+<br/><br/>
+
+#### 3. Tell Angular, if certain event does not matter for change detection.
+```ts
+import { NgZone } from '@angular/core';
+
+@Component({})
+export class CounterComponent implements OnInit {
+  private zone = inject(NgZone);
+  count = signal(0);
+
+  ngOnInit() {
+
+    // This event is required as changes signal.
+    setTimeout(() => {
+      this.count.set(0);
+    }, 4000);
+
+    this.zone.runOutsideAngular(() => {
+      // This event not required to trigger change detection.
+      setTimeout(() => {
+        console.log('in init');
+        console.log('Timer expired');
+      }, 500);
+    })
+  }
+}
+
+```
+<br/><br/>
+
+## The OnPush Strategy.
+* (Angulars change detection mechanism (by zone.js) is ***default Strategy*** of change detection mechanism).
+
+* You can also use ***The OnPush Strategy***.
+* This is a opt-in strategy which you can enable on a per component basis to make sure that change detection potentially runs less often for the given component.
+* ***The OnPush Strategy*** tells Angular that the component for which you enabled it will only ever change because some event occurred inside of its sub component tree or if any input value changes in that component.
+
+* With ***The OnPush Strategy*** the change detection will trigger if:
+  1. Some event occurred inside of its sub component tree.
+  2. If any input value changes in that component.
+  3. If manually triggered change detection.
+  4. If any `signal` changed in its sub component tree.
+
+<br/><br/>
+
+# Going zoneless.
+* Following things also makes Angular aware of changes:
+  1. signals.
+  2. Events.
+  3. Manually triggered change detection.
+
+* Hence with help of above three we can trigger change detection ***without zone.js***.
+
+##### Going zoneless step 1:
+* In angular.json.
+* In `build` node.
+* In `polyfills` remove `zone.js` polyfill.
+* Restart dev server.
+
+##### Going zoneless step 2:
+* In `main.ts`.
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent, {
+  providers:[provideExperimentalZonelessChangeDetection()]
+}).catch((err) => console.error(err));
+```
+
+<br/><br/>
+
+>[!NOTE]
+> `message$`
+> Here `$` is used as naming convention used for RxJS-related variables or properties.
+
+<br/><br/>
+
+# RxJS & Observables
+
+* What are Observables?
+* Creating & Using Observables.
+* Observable Operators.
+* Observables vs Signals.
+
+<br/><br/>
+
+## What are RxJS & Observables?
+##### RxJS
+* RxJS is a third party library which is independent of Angular.
+* But RxJS is used by Angular.
+##### Observable
+* Observable is an Object introduced by RxJS library that produces & controls a stream of data.
+
+<br/>
+
+>[!NOTE]
+> Observable will not emit anything, if it does not have subsrciber.
+
+## `subscribe()` method
+* It takes `observer` object as parameter.
+
+### `observer` object
+* It can implement upto 3 methods.
+  1. `next()` method
+     * It will be trigger for every new value that's emitted.
+
+     * Emitted value will be received as parameter to `next(emittedValue)` method.
+
+  2. `complete()`method
+     * It is called if Observable would not emit any value.
+
+  3. `error()` method
+     * This is triggered if an error occurs.
+
+<br/>
+
+>[!TIP]
+> If you only want `next()` method and not require other 2, then instead of passing `observer` object you can directly pass `next()` to `subscribe()` method.
+
+<br/>
+
+>[!IMPORTANT]
+> Always store subscription in variable and clean it up when that component is to removed from DOM, to make sure there is no memory leak and there are no ongoing observables behind the scenes that are not needed.
+
+```ts
+export class AppComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    const subscription = interval(1000).subscribe({
+      next: (val) => console.log(val),
+    });
+
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
+    });
+  }
+}
+```
+
