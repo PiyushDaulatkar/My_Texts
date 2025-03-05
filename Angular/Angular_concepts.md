@@ -2203,7 +2203,7 @@ bootstrapApplication(AppComponent, {
 <br/>
 
 >[!NOTE]
-> Observable will not emit anything, if it does not have subsrciber.
+> Observable will not emit anything, if it does not have subscriber.
 
 ## `subscribe()` method
 * It takes `observer` object as parameter.
@@ -2247,3 +2247,771 @@ export class AppComponent implements OnInit {
 }
 ```
 
+<br/><br/>
+
+# [RxJS Operators](https://rxjs.dev/api)
+* Operators are functions that you can apply to your observable data stream to perform various transformations or operations on the emitted values.
+
+* They allow you ***to modify or transform*** the values ***before they are emitted***.
+* To add operators to an observable pipeline, use the `pipe()` method before calling `subscribe()`.
+```ts
+const subscription = interval(1000)
+      .pipe(map((val) => val * 2))
+      .subscribe({
+        next: (val) => console.log(val),
+      });
+```
+
+<br/><br/>
+
+<table style="border-style: solid;">
+<thead style="border-style: solid;">
+<tr><td>Subjects</td><td>Observable</td></tr>
+</thead><tboby>
+<tr><td>You need to emit value <b>manually</b>.</td><td>Values are automatically emitted here by <b>predefined datasource</b>.</td></tr>
+<tr><td></td>
+<td>e.g. interval().</td>
+</tr>
+</tbody></table>
+
+<br/><br/>
+
+### ***signals*** vs observables(especially ***Subjects***)
+
+<table style="border-style: solid;">
+<thead style="border-style: solid;">
+<tr><td>signals</td><td>observables(especially Subjects)</td></tr>
+</thead><tboby>
+<tr><td>Has initial value.</td><td>observables don't have initial value, (subjects can have initial value).</td></tr>
+<tr><td>Don't need subscriber.</td>
+<td>Need a subscriber to emit values.</td>
+</tr>
+<tr><td>Values in a container.</td>
+<td>Values over time.</td>
+</tr>
+<tr><td>You can read a value from signal in any point in time.</td>
+<td></td>
+</tr>
+<tr><td><b>Great for managing application state.</b></td>
+<td><b>Great for managing event & streamed data.</b>(where values arrives asynchronously over time.)</td>
+</tr>
+</tbody></table>
+
+<br/><br/>
+
+### You can convert signals to observables and vice versa.
+
+#### Converting signals to observables:
+* `toObservable()`
+* Takes `signal` as input and converts that to an `observable`.
+* Takes `signal` ***reference*** as input.
+
+* Use it at places where we can use DI like in `constructor` or as `property in class`.
+```ts
+import { toObservable } from '@angular/core/rxjs-interop';
+
+export class AppComponent implements OnInit {
+  clickCount = signal(0);
+
+  // property in class
+  clickCount$ = toObservable(this.clickCount);
+
+   // OR
+
+  // constructor
+  constructor() {
+    toObservable(this.clickCount)
+  }
+
+
+    ngOnInit(): void {
+    const subscription = this.clickCount$.subscribe({
+      next: (val) => console.log(`Clicked button ${this.clickCount()} times.`),
+    });
+
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
+    });
+}
+```
+
+<br/>
+
+#### Converting observables to signals:
+* `toSignal()`
+* Takes `observable` as input and converts that to an `signal`.
+ 
+* Use it at places where we can use DI like in `constructor` or as `property in class`.
+
+```ts
+import { toSignal } from '@angular/core/rxjs-interop';
+
+export class AppComponent implements OnInit {
+  interval$ = interval(1000);
+  intervalSignal = toSignal(this.interval$);
+}
+```
+* As `observables` don't have initial value, this created `signal` will return `undefined` initially.
+
+* To return an initial value from `signal` created from `toSignal()`, we can pass it second argument which is a configuration object.
+```ts
+intervalSignal = toSignal(this.interval$, { initialValue: 0 });
+```
+* `toSignal()` automatically cleansup the subscription.
+
+<br/><br/>
+
+## Creating custom Observables
+
+* Create object of `Observable` class.
+* `Constructor` of this class takes function as input.
+
+* The function passed will take `subscriber` as argument.
+* This function will get execute whenever we subscribe to that observable.
+* `subscriber` argument connects observable to subscriber.
+* On this `subscriber` argument we can call various method as per required to emit things/events.
+```ts
+subscriber.next()
+subscriber.error()
+subscriber.complete()
+subscriber.add()
+subscriber.closed
+subscriber.remove()
+subscriber.unsubscribe()
+```
+```ts
+customInterval$ = new Observable((subscriber) => {
+    // subscriber.error();
+    let timesExecuted = 0;
+    const interval = setInterval(() => {
+      if (timesExecuted > 5) {
+        clearInterval(interval);
+        subscriber.complete();
+        return;
+      }
+      console.log('Emitting new value...');
+      subscriber.next({ message: 'new value' });
+      timesExecuted++;
+    }, 2000);
+  });
+
+ngOnInit(): void {
+  this.customInterval$.subscribe({
+    next: (val) => console.log(val),
+    complete: () => console.log('COMPLETED!'),
+    error: () => console.log('ERROR!'),
+  });
+  const subscription = this.clickCount$.subscribe({
+    next: (val) => console.log(`Clicked button ${this.clickCount()} times.`),
+  });
+}
+```
+
+<br/><br/>
+
+# Sending HTTP Requests & Handling Responses
+* Connecting Angular to a Backend & Database.
+* Fetching data.
+* Sending data.
+* Handling "Loading" & "Error" States.
+
+## Connecting Angular to a Backend & Database.
+* Angular app sends http requests to Backend.
+
+## Sending HTTP requests in Angular
+* Use special service called `HttpClient`.
+
+```ts
+// in main.ts file.
+import { provideHttpClient } from '@angular/common/http';
+
+
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient()]
+}).catch((err) => console.error(err));
+```
+
+```ts
+import { HttpClient } from '@angular/common/http';
+
+@Component()
+export class AvailablePlacesComponent {
+  private httpClient = inject(HttpClient);
+}
+```
+
+<br/>
+
+### Providing the `HttpClient` when using `NgModules`
+* Pass `HttpClient` to the providers array of your ***root NgModule***:
+```ts
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
+ 
+@NgModule({
+  declarations: [
+    AppComponent,
+    PlacesComponent,
+    // ... etc
+  ],
+  imports: [BrowserModule, FormsModule],
+  providers: [provideHttpClient()],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+<br/><br/>
+
+## Fetching data.
+* `httpClient.get()`
+
+* It takes `url` as input.
+```ts
+this.httpClient.get('http://localhost:3000/places').subscribe({
+      next: (resData) => {
+        console.log(resData);
+      }
+    })
+```
+>[!IMPORTANT]
+> Here just calling `get()` method ***will not make http request***.
+> 
+> When you call `get()` on the `HttpClient`, it returns an Observable that you need to `subscribe` to in order to make the actual HTTP request and handle the response.
+
+<br/>
+
+>[!NOTE]
+> ***By default***, `HttpClient` methods will only ***emit one value*** as response.
+> 
+> But you can configure them to emit stream of values.
+
+<br/>
+
+#### `HttpClient` ***methods*** also takes a ***configuration object*** as second argument to configure the request.
+
+##### observe: 'response'
+* With this configuration, the `next` method will ***receive whole response object*** instead of response data/body.
+```ts
+this.httpClient
+      .get<{places: Place[]}>('http://localhost:3000/places',{
+        observe: 'response'
+      })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          console.log(response.body?.places);
+        },
+      });
+```
+<br/>
+
+##### observe: 'events'
+* With this configuration, the `next` method will get trigger for different events that occue during the request-response lifecycle.
+```ts
+this.httpClient
+      .get<{places: Place[]}>('http://localhost:3000/places',{
+        observe: 'events'
+      })
+      .subscribe({
+        next: (event) => {
+          console.log(event);
+        },
+      });
+```
+
+<br/>
+
+### catchError() RxJS operator
+* It takes function as an argument. And that function takes `error` & `observable that emitted the error`.
+* It should return a new `observable`.
+```ts
+const subscription = this.httpClient
+      .get<{ places: Place[] }>('http://localhost:3000/places')
+      .pipe(map((resData) => resData.places), catchError((error) => throwError()))
+      .subscribe({
+        next: (places) => {
+          this.places.set(places);
+        },
+        error: (error) => {
+          console.log(error);
+          console.log(error.message);
+          this.error.set(
+            'Something went wrong fetching the availble places. Please try again later.'
+          );
+        },
+        complete: () => {
+          this.isFetching.set(false);
+        },
+      });
+```
+
+<br/><br/>
+
+### tap() RxJS operator
+* To execute some code as you would do it in subscribe, but without subscribing.
+* It takes `observer` object as input.
+
+* `tap()` does not trigger the observable; it just lets you observe the values as they pass through.
+* ***State Updates***: For performing actions like updating a global state or making HTTP requests that don’t need to modify the data being streamed.
+
+<br/><br/>
+
+# Interceptors
+
+* Angulars `HttpClient` allows us to register interceptors.
+* They are special functions that will be executed ***when a request is about to be sent*** or ***when a response arrive***.
+
+* Besides the place where you triggered a request you've got another place where you can execute logic.
+
+#### Register the interceptor
+* In location where you provide `HttpClient`.
+* `provideHttpClient(withInterceptors([]))`
+
+* The `withInterceptors()` takes array of functions.
+* Here you register all the interceptor functions that should be executed by Angular for any outgoing request or incoming response.
+* e.x.: `withInterceptors(loggingInterceptor)`
+* Interceptor function takes two arguments as:
+  1. The intercepted request object.
+  2. next function
+
+```ts
+function loggingInterceptor(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn
+) {
+  console.log('[Outgoing Request');
+  console.log(request);
+  return next(request);
+}
+```
+
+* You can also produce a new request by calling the clone method on the existing request (because you can't mutate original request directly but you can clone it to produce a new one).
+
+* `clone()` method takes a object as argument which defines which parts of the request should be changed.
+
+### Optional: Class-based Interceptors
+* Besides defining HTTP interceptors as functions (which is the modern, recommended way of doing it), you can also define HTTP interceptors via classes.
+
+* For example, the loggingInterceptor from the previous lecture could be defined like this (when using this class-based approach):
+```ts
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
+ 
+@Injectable()
+class LoggingInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<unknown>, handler: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('Request URL: ' + req.url);
+    return handler.handle(req);
+  }
+}
+```
+* An interceptor defined like this, must be provided in a different way than before though.
+
+* Instead of providing it like this:
+```ts
+providers: [
+  provideHttpClient(
+    withInterceptors([loggingInterceptor]),
+  )
+],
+```
+* You now must use withInterceptorsFromDi() and set up a custom provider, like this:
+```ts
+providers: [
+  provideHttpClient(
+    withInterceptorsFromDi()
+  ),
+  { provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true }
+]
+```
+
+<br/><br/>
+
+### On the same interceptor you can also intercept incoming responses.
+* For response interceptor, you will ***always need request interceptor***.
+
+* Because its the result of calling `next()` which will allow you to also intercept responses and act on responses.
+* As `next()` will give you an `Observable` that's wrapped around an HTTP event type of value.
+
+```ts
+function loggingInterceptor(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn
+) {
+
+  console.log('[Outgoing Request');
+  console.log(request);
+
+  return next(request).pipe(
+    tap({
+      next: (event) => {
+        if (event.type === HttpEventType.Response) {
+          console.log('[INCOMING RESPONSE]');
+          console.log(event.status);
+          console.log(event.body);
+        }
+      },
+    })
+  );
+}
+```
+
+<br/><br/>
+
+# Managing Forms
+* 2 ways of handling forms in Angular:
+  1. Template-driven forms.
+  2. Reactive forms.
+
+* Managing Inputs, Values & Validation,
+
+<br/>
+
+<table style="border-style: solid;">
+<thead style="border-style: solid;">
+<tr><td>Template-driven forms</td><td>oReactive forms</td></tr>
+</thead><tboby>
+<tr><td>Setting up form via component template.</td><td>Setting up form via TYPESCRIPT code.</td></tr>
+</tbody></table>
+<br/>
+
+# Template-driven forms
+* When using this approach, you let Angular know about your form and the input elements by adding ***special directives*** to some of the elements in template.
+
+* End goal is to make Angular aware of this form and its inputs so that you can then use Angular to easily interact with that form.
+
+### `ngForm`
+  * Special identifier offered by Angular.
+  * It is an object created & managed by Angular.
+
+  * It binds **form** template variable to an object of type `ngForm`.
+  * Then all the elements with ***special directives*** are registered to this object.
+
+### special directives:
+* `ngModel`
+  * It ***registers*** any type of ***input element*** with Angular.
+  * It allows Angular to manage that element.
+  * You need to add `name` attribute to that element where you add `ngModel` directive.
+
+  * Because this `name` is internally used by Angular to register that input element & manage it.
+<br/><br/>
+
+* `required`
+  * Need to be used with `ngModel` directive, otherwise Angular will consider it as normal required ***attribute*** not ***special directive***.
+
+* `email`
+* `minlength`
+* `pattern`
+
+<br/>
+
+#### ng-touched ng-untouched ng-dirty ng-valid ng-invalid ng-pristine
+* `ng-pristine`: Tells where input feild has received any input from user or not.
+* `ng-dirty`: User has input some characters.
+* These are CSS classes are automatically added by Angular.
+
+* You can use them to add styles.
+```css
+.control:has(.ng-invalid.ng-touched.ng-dirty) label {
+  color: #f98b75;
+}
+
+input.ng-invalid.ng-touched.ng-dirty {
+  background-color: #fbdcd6;
+  border-color: #f84e2c;
+}
+```
+
+<br/><br/>
+
+### `debounceTime()` RxJS operator
+* Will wait for certain time provided in its input.
+
+* And emit all/latest value after that time period.
+
+<br/><br/>
+
+# Reactive Forms
+* Create a variable in component which will hold value of type `FormGroup`.
+* `FormGroup` represents `form` element.
+
+* `FormGroup` `constructor` takes an ***object*** as an input, and that object registers multiple ***key-value pairs*** where every key-value pair ***represents one control (`FormControl`)*** inside of that `FormGroup` or some nested `FormGroup`.
+
+* `ReactiveFormsModule`: Provides ***special directives*** to bind `controls` to `template`.
+
+>[!TIP]
+> In Reactive forms, you need not to pass `$event` to method which is called on `ngSubmit` event because the component file already has access to that form.
+
+<br/>
+
+## Adding `Validators`
+You can add validators to Reactive From in different ways:
+
+1. directly passing:
+   * `email: new FormControl('',Validators.required)`.
+
+2. passing array of validators:
+   * `email: new FormControl('',[Validators.required, Validators.minLength(2)])`.
+
+3. passing configuration object:
+   * `email: new FormControl('', { validators: [Validators.required] }),`
+
+>[!NOTE]
+> Above configuration object can take:
+> * `validators`: Takes ***a validator*** or ***array of validators***.
+> * `asyncValidators`.
+> * `nonNullable`: To make sure the input is not set to null again if it was reset.
+> * `updateOn`: To update input value on any specifed event.
+
+1. If you need to add validatiors dynamically at some point in future.
+   * `this.form.controls.email.addValidators()`.
+
+<br/>
+
+### Creating Custom Validator in Reactive Form
+* It is a function added to `validators` key.
+* This function will automatically get that `control` as an input.
+
+* This function should return null or nothing, if the control is considered to be valid.
+* Or return anything else if considered to be invalid, like an object with details about the error if its considered invalid.
+
+<br/>
+
+### `asyncValidators`
+* It is a function which gets a `control` as a input.
+* It must return an `observable`.
+
+* Usecase: 
+  * Send HTTP request to backend to check email is registered.
+* This function should return null or nothing(OBSERVABLE), if the control is considered to be valid.
+* Or return anything else if considered to be invalid, like an object(OBSERVABLE) with details about the error if its considered invalid.
+```ts
+function emailIsUnique(control: AbstractControl) {
+  if (control.value !== 'test@example.com') {
+    return of(null);
+  }
+  return of({ notUnique: true });
+}
+```
+
+<br/><br/>
+
+### FormGroup
+### FormControl
+### FormArray
+* If you don't want unique name per control (Hence in `FormArray` you add `FormControl` without name).
+
+* And you have list of controls that are meant to work together.
+```ts
+source: new FormArray([
+      new FormControl(false),
+      new FormControl(false),
+      new FormControl(false),
+    ]),
+```
+```html
+<fieldset formArrayName="source">
+    <legend>How did you find us?</legend>
+    <div class="control">
+      <input
+        type="checkbox"
+        formControlName="0"
+      />
+      <label for="google">Google</label>
+    </div>
+
+    <div class="control">
+      <input
+        type="checkbox"
+        formControlName="1"
+      />
+      <label for="friend">Referred by friend</label>
+    </div>
+
+    <div class="control">
+      <input
+        type="checkbox"
+        formControlName="2"
+      />
+      <label for="other">Other</label>
+    </div>
+  </fieldset>
+```
+
+<br/><br/>
+
+### Combined Validators
+```ts
+function equalValues(controlName1: string, controlName2: string) {
+  return (control: AbstractControl) => {
+    const val1 = control.get(controlName1)?.value;
+    const val2 = control.get(controlName2)?.value;
+
+    if (val1 === val2) {
+      return null;
+    }
+
+    return { valuesNotEqual: true };
+  };
+}
+```
+```ts
+passwords: new FormGroup(
+      {
+        password: new FormControl('', {
+          validators: [Validators.required, Validators.minLength(6)],
+        }),
+        confirmPassword: new FormControl('', {
+          validators: [Validators.required, Validators.minLength(6)],
+        }),
+      },
+      { validators: [equalValues('password', 'confirmPassword')] }
+    ),
+```
+
+<br/><br/>
+
+# Routing
+* What & why?
+* Route Configuration.
+* Nested routes.
+* Resolving Data & Controlling Access.
+
+* Angular application is a ***single page application***.
+* I.e only single HTML page (index.html) is served by server (hosting your angular app) to the client (browser).
+
+#### Angular has built-in Routing support.
+
+#### Client-Side Routing
+* Angular ***watches & manipulates*** the URL & renders ***different components*** for different URLs.
+
+* Angular framework takes care of updating the URL, reading the URL and of loading different components.
+
+>[!IMPORTANT]
+> It's all happening in the browser! There's no server side routing involved.
+>
+> /user ==> UserComponent
+> 
+> /shop ==> ShopComponent.
+
+### Enabling Routing
+* In `main.ts`
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+
+import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
+import { TasksComponent } from './app/tasks/tasks.component';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter([
+      {
+        path: 'tasks',
+        component: TasksComponent,
+      },
+    ]),
+  ],
+}).catch((err) => console.error(err));
+
+```
+* `provideRouter()` takes array of routes.
+
+* `route` => Object with combination of ***path in URL*** & the information ***which component should become active*** and be loaded when that path becomes active.
+
+>[!TIP]
+> If you have many routes, its recommended to create a seperate file and add those there.
+>
+> `app.routes.ts`
+>
+> The array of routes in that file should be of type `Routes`.
+
+<br/><br/>
+
+>[!TIP]
+> Same for configuration object. Create a seperate file and add it there.
+>
+> `app.config.ts`
+>
+> The object in that file should be of type `ApplicationConfig`.
+
+>[!NOTE]
+> The order of routes where they are declared doesn't matter, if the routes are different.
+>
+> But order will matter if they same
+
+<br/>
+
+### RouterOutlet (<router-outlet />)
+* It is a special directive.
+
+* Marker for Angular to understand where it should render that routes content.
+* As we do not want to replace whole page if sub-route is hit, we just want to update the part of UI when new route it hit.
+
+>[!IMPORTANT]
+> * `<router-outlet />` in `app.component.html` will display that component specified in the route.
+> 
+> * `<router-outlet />` in any other `component.html` file will display that component specified in the ***child route***.
+
+<br/>
+
+### RouterLink
+> [!NOTE]
+> `<a href="/tasks">tasks</a>`
+> This will also navigate to /tasks.
+> ***But will reload whole page(files).***
+
+* So instead of using `href` ***attribute*** for setting up link, you should use `routerLink` ***directive*** in Angular application.
+
+* With `routerLink` ***directive***, Angular will block the browser default behavior(which is to refetch the HTML document), and will take a look at the path you want to navigate to, and it will then take a look at the route configuration and load and render the appropriate component without leaving that single page application.
+* `routerLink="/tasks"`.
+* `imports: [RouterLink]`.
+
+<br/>
+
+### routerLinkActive
+* It allows to define a CSS class that should be applied to the element, if it's the element that led to the currently active route being loaded.
+* `routerLinkActive="class"`
+
+* `imports: [RouterLinkActive]`
+
+<br/>
+
+## Dynamic routes
+* `users/:userId`
+* 
+* `users/:userId/:taskId`
+
+```html
+  <a [routerLink]="'/users/'+ user().id" routerLinkActive="selected"></a>
+  
+  <!-- Angular syntax, pass each part as a record in array. -->
+   <!-- Here Angular will add slashes('/') automatically. -->
+  <a [routerLink]="['/users', user().id]" routerLinkActive="selected"></a>
+```
+
+#### Extracting Dynamic Route Parameters:
+
+1. ***Input based approach***:
+   1. Add an input to the component as the same name as that of dynamic path parameter.
+   2. In `app.config.ts` add `withComponentInputBinding()`.
+   3. `withComponentInputBinding()` tell Angular we want ***Input based approach***.
+```ts
+userId
+```
+
+2. ***using `ActivatedRoute` service (Observable based approach)***
+   * `ActivatedRoute` gives you various properties that hold information about the route that has been activated by the Angular router.
+
+### Nested Routes
+* Chlid routes are special Angular routing feature that allows us to work wit `nested RouterOutlet`.
+* So, it allows us to load a component into another component that was loaded because of another route.
+
+* Add `children` property to route, ***it is array of routes***.
