@@ -9,6 +9,9 @@
   * `-` seperated.
 ### To start application.
 * `npm start` or `ng serve`
+### To bulid application.
+* To create optimized complied code.
+* `npm run build` or `ng build`
 ### To create component.
 * `ng generate component comp`
 * or `ng g c comp`
@@ -25,7 +28,35 @@
 * `ng generate pipe pipes/sort`
 * or `ng g p sort`
 * or `ng g p sort --skip-tests`.
+### To ***" add "*** libraries to project and to also ***" configure "*** your project for these libraries.
+* `ng add @angular/ssr`
+* `ng add @angular/fire`.
+### To deploy application.
+* `ng deploy`.
 <br/><br/>
+
+# Updating Angular CLI version:
+1. Check you current installed version:
+
+`npm list -g @angular/cli`
+
+1. Check versions available on npm:
+
+`npm view -g @angular/cli dist-tags`
+
+1. Uninstall the current version globally:
+
+`sudo npm uninstall -g @angular/cli`
+
+1. Install the required version:
+
+`npm install -g @angular/cli@18.2.15`
+
+`npm install -g @angular/cli@latest`
+
+`npm install -g @angular/cli@next`
+
+<br/>
 
 
 # VS code extensions

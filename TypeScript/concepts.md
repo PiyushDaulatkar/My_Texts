@@ -33,4 +33,3 @@ To allow for multiple types in a single value you can use Union Types: `myVal: n
 
 >[!TIP]
 > ### Whenever you to update array, copy it into new object and return that object.
-> 

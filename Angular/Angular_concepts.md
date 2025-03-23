@@ -1285,7 +1285,7 @@ test.
 ```
 
 >[!TIP]
-> You can use camelCase synatax also like ***'fontSize':'64px'***, to aviod dashes(-) and white spaces( ), or using quotes.
+> You can use camelCase syntax also like ***'fontSize':'64px'***, to aviod dashes(-) and white spaces( ), or using quotes.
 
 <br/><br/>
 
@@ -3010,8 +3010,368 @@ userId
 2. ***using `ActivatedRoute` service (Observable based approach)***
    * `ActivatedRoute` gives you various properties that hold information about the route that has been activated by the Angular router.
 
+
 ### Nested Routes
 * Chlid routes are special Angular routing feature that allows us to work wit `nested RouterOutlet`.
 * So, it allows us to load a component into another component that was loaded because of another route.
 
 * Add `children` property to route, ***it is array of routes***.
+
+<br/>
+
+> [!NOTE]
+> With InputBinding, the Child routes, bydefault do not receive those path parameters as input.
+>
+> to get routeParameter in child routes:
+> use `withRouterConfig()` with `always`.
+
+#### `withRouterConfig()`
+* It takes object as an argument, which allows to configure the router in datail.
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withRouterConfig({
+        paramsInheritanceStrategy: '',
+        // canceledNavigationResolution: '',
+        // onSameUrlNavigation: '',
+        // resolveNavigationPromiseOnError: '',
+        // urlUpdateStrategy: '',
+      })
+    ),
+  ],
+};
+```
+
+<br/>
+
+>[!TIP]
+> Angular syntax
+>
+> To go back to parent route.
+> 
+> `<a routerLink="../">link</a>`
+> 
+>  users/u3/tasks/new => users/u3/tasks
+
+<br/>
+
+### To navigate pogrammatically
+
+* Inject `Router`.
+```ts
+private router = inject(Router);
+
+this.router.navigate(['/users', this.userId(), 'tasks'], {
+      replaceUrl: true,
+    });
+```
+
+<br/>
+
+### Page not found route.
+* If the url path doesn't matches in routes.
+
+* You can display fallback component.
+```ts
+{
+  path: '**',
+  component: NotFoundComponent,
+},
+```
+
+<br/>
+
+### Redirecting Users
+```ts
+{
+  path: '',
+  redirectTo: 'tasks',
+  pathMatch: 'prefix',
+  // pathMatch: 'full',
+},
+```
+* `pathMatch`
+  * Router configuration to determine how the router should match the URL to a route.
+  * `'prefix'`: This option tells Angular to match the prefix of the URL. In other words, it matches the route as long as the beginning part of the URL corresponds to the defined path.
+
+    * It's typically used for routes that need to be ***matched partially***.
+  * `'full'`: This option tells Angular to match the entire URL exactly with the route's path.
+    * This is useful when you want to ensure that the route matches the entire URL exactly, without any extra segments.
+
+<br/>
+
+>[!IMPORTANT]
+> If the name of imports are same/clashes, you can give alias to imported thing.
+> 
+> `import { routes as userRoutes } from './users/users.routes';`
+
+<br/>
+
+### Activated Route vs Activated Route Snapshot.
+
+* Activated Route: returns subjects/observables.
+
+* ***Activated Route Snapshot: returns values.***
+  * Use when you dont need Reactive/dynamic feature.
+
+<br/>
+
+### queryParams
+```ts
+<a routerLink="./" [queryParams]="{order: 'asc'}">
+    Sort Ascending / Descending
+</a>
+```
+### Extracting currently active queryParams
+1. `withComponentInputBinding()`
+```ts
+order = input<'asc' | 'desc'>();
+// input name same as in queryParams.
+```  
+<br/>
+
+### Route Guards
+* A function that checks wheater a certain navigation action should be permitted or not.
+
+* It controls access to a route.
+* You can add Route Guards with help of following properties:
+    * `canMatch`.
+    * `canActivate`
+    * `canActivateChild`
+    * `canDeactivate`
+
+<br/><br/>
+
+# Lazy Loading
+
+* What & Why Lazy Loading?
+
+* Lazily Loaded Routes
+* Deferrable Views
+
+<br/>
+
+### What & Why Lazy Loading / Code Splitting?
+* Certain pieces of overall application code that you write are only loaded and executed ***when they are needed***.
+
+* Advantage: ***smaller initial bundle size, application is up & running quicker***.
+
+<br/>
+
+### Two main approaches for adding Lazy Loading:
+1. Route-based Lazy Loading.
+2. Deferrable Views.
+
+<br/>
+
+## 1. Route-based Lazy Loading
+* Instead of ***component*** in routes object use ***loadComponent***.
+
+* `loadComponent` takes a function and that function should return value produced by calling ***import as a function***.
+* Angular will trigger the `loadComponent` function, when that route is activated.
+```ts
+loadComponent: () =>
+    import('../tasks/tasks.component').then(
+      (module) => module.TasksComponent
+    ),
+```
+>[!NOTE]
+> ***Eager Loading***
+>
+> Default behaviour, each imports in ***import {} from '../../'*** is loaded eagerly.
+
+<br/><br/>
+
+## 2. Deferrable Views.
+* Angular17+.
+* @defer
+
+```ts
+// Angular will load this component and its code lazily "once the browser enters idle state".
+@defer {
+<app-offer-preview />
+}
+
+
+//
+@defer (on viewport) {
+<app-offer-preview />
+}
+```
+
+<br/>
+
+### `@placeholder` block
+* To define/show some fallback content that will be shown, whilst the content in `@defer` block is not loaded.
+
+<br/>
+
+<table border="1">
+  <tr>
+    <th>Trigger</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>idle</td>
+    <td>Triggers when the browser is idle.</td>
+  </tr>
+  <tr>
+    <td>viewport</td>
+    <td>Triggers when specified content enters/scrolls into the viewport.</td>
+  </tr>
+  <tr>
+    <td>interaction</td>
+    <td>Triggers when the user interacts with specified element.</td>
+  </tr>
+  <tr>
+    <td>hover</td>
+    <td>Triggers when the mouse hovers over specified area.</td>
+  </tr>
+  <tr>
+    <td>immediate</td>
+    <td>Triggers immediately after non-deferred content has finished rendering.</td>
+  </tr>
+  <tr>
+    <td>timer</td>
+    <td>Triggers after a specific duration.</td>
+  </tr>
+</table>
+
+<br/><br/>
+
+# Deployment
+
+* Build options: SPA, SSR, SSG.
+* What, Why & When?
+
+<br/>
+
+<table border="1">
+  <tr>
+    <th>Feature</th>
+    <th>ng serve</th>
+    <th>ng build</th>
+  </tr>
+  <tr>
+    <td>Purpose</td>
+    <td>Runs the app locally in development mode</td>
+    <td>Builds the app for production or staging</td>
+  </tr>
+  <tr>
+    <td>Development Server</td>
+    <td>Yes, it starts a development server</td>
+    <td>No, it just builds the files</td>
+  </tr>
+  <tr>
+    <td>Live Reload</td>
+    <td>Yes, automatically reloads the app when changes are made</td>
+    <td>No, doesn’t watch for file changes</td>
+  </tr>
+  <tr>
+    <td>Optimized Output</td>
+    <td>Not optimized (intended for dev)</td>
+    <td>Optimized and minified for production</td>
+  </tr>
+  <tr>
+    <td>Output Directory</td>
+    <td>Runs from memory, no physical output</td>
+    <td>Creates an output in dist/ folder</td>
+  </tr>
+  <tr>
+    <td>Common Usage</td>
+    <td>ng serve (or ng start in some versions)</td>
+    <td>ng build --prod for production</td>
+  </tr>
+</table>
+
+<br/>
+
+### `ng build`
+* It compiles TS code to JS (as TS does not run in browser).
+* It will also optimize the code (shrink it as small as possible and try to optimize overall bundle size).
+
+* After running `ng build`:
+  * `dist` folder will be created.
+  * It contains folder and files that we would deploy.
+
+<br/>
+
+## SPA (Single Page Application)
+* Single HTML file.
+
+* Default way with `ng build`.
+* Here we build a ***client-side only*** web application.
+* ***client-side only***: All the UI rendering happens on the client-side by the JS code that is being served by the web host to the website visitors.
+* All code executes in the browser.
+* No dynamic server needed - a ***static host*** suffices.
+
+#### Disadvantages:
+* Initially missing contents (as UI is rendered in the browser of visitor).
+  * If brower is slow, the user might see initial empty page or some missing contents.
+* Bad SEO (crawlers will also likely see an empty site).
+
+#### Usecases:
+* SEO does'nt matter.
+* Authentication is required.
+
+<br/>
+
+### SPAs: Deployment
+* Search for any static web host(hosting providers) to host ***static web apps***.
+  * ex: Firebase (by Google).
+
+### `ng add` or `ng deploy`
+* You can manually depoly your Angular app or use `Angular CLI` for deployment.
+* `ng add`: to add third-party libraries(like firebase) that support to Angular.
+  * It will configure your project for those libraries.
+
+* `ng deploy`: will build & deploy your app to configured deployment provider.
+
+<br/><br/>
+
+
+## SSR (Server-side Rendering)
+* Angular app routes are ***rendered on-demand*** on a dynamic web server.
+* Browser receives finished, rendered page.
+
+* Web app is ***hydrated***("activated") and becomes a SPA after initial rendering.
+* Then it becomes a SPA and subsequent actions will be handled by client-side JS.
+* So that you get both benefits:
+  1. Finished pages without missing content for the ***initial request***.
+  2. Instant responses (as client-side JS doing heavy work).
+* Dynamic web server is required.
+
+#### Disadvantages:
+* Long-taking tasks may cause empty pages.
+* Increased complexity.
+
+<br/>
+
+#### `ng add @angular/ssr`
+
+>[!IMPORTANT]
+> In your project if you are using `localStorage`, then you will get error if you run you app server with SSR.
+>
+> Because, `localStorage` is present in browser (client side) and not on server side where you page is rendered.
+>
+> Hence use `afterNextRender()`.
+>
+> `afterNextRender()` function only executes on client-side.
+>
+> Here add any code that is needed to run only in the browser (that needs access to browser side features).
+
+<br/><br/>
+
+## SSG (Static Site Generation)
+* Combination of SPA & SSR.
+* Angular app routes are ***pre-rendered at build time***.
+* Browser receives finished, rendered pages.
+
+* Web app is ***hydrated***("activated") and becomes a SPA after initial rendering.
+* Dynamic web server is required - static host suffices if ALL pages are pre-rendered.
+
+#### Disadvantages:
+* No dynamic server-side data fetching.
