@@ -58,6 +58,10 @@
 
 <br/>
 
+# To run on network host
+* `ng serve --host 0.0.0.0`
+
+<br/>
 
 # VS code extensions
 * Angular Language Service (by angular.dev).

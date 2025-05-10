@@ -374,3 +374,26 @@ Sometimes we need to be more general in how we access these attributes. For exam
   */
 }
 ```
+
+<br/>
+
+# Naming Convention
+## BEM (Block Element Modifier)
+* ***Block***: Represents a standalone component (e.g., hero, navbar, button).
+
+* ***Element***: Represents a part of a block (e.g., `button__icon`, `navbar__item`).
+
+* ***Modifier***: Represents a different state or variant of a block or element (e.g., `hero--large`, `navbar__item--active`).
+
+<br/>
+
+# CSS units
+* px: Hard code.
+* %: percent related to parent container.
+* vw, vh: percent related to screen.
+  * viewport width/height.
+* vmax, vmin: max/min form screen height and width.
+* em, rem.
+
+# Responsive Tips
+* Add `position: relative;` to all parent divs.
